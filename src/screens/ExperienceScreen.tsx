@@ -260,10 +260,21 @@ export const ExperienceScreen = () => {
           const hasAppTags = data.tags && (data.tags.includes('heart') || data.tags.includes('pray') || data.tags.includes('envelope'));
           
           if (data.event === 'message' && !hasAppTags && (data.message || data.title)) {
+            // SECURITY: Sanitize incoming messages from the public ntfy topic.
+            // The topic name is embedded in the client bundle and anyone can post to it.
+            // Enforce length limits and strip control characters to mitigate abuse.
+            const sanitize = (s: string | undefined, maxLen: number): string | undefined => {
+              if (!s || typeof s !== 'string') return undefined;
+              // Strip control characters (except newlines) and trim
+              return s.replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/g, '').trim().slice(0, maxLen);
+            };
+            const safeTitle = sanitize(data.title, 100);
+            const safeMessage = sanitize(data.message, 500) || '...';
+
             lastMsgId = data.id;
             setLiveMessage({
-              title: data.title,
-              message: data.message || '...'
+              title: safeTitle,
+              message: safeMessage
             });
             setBearState('love');
           }
@@ -295,9 +306,14 @@ export const ExperienceScreen = () => {
                   const now = Date.now() / 1000;
                   if (now - data.time < 60) {
                     lastMsgId = data.id;
+                    // SECURITY: Sanitize polled messages (same as WebSocket path)
+                    const sanitize = (s: string | undefined, maxLen: number): string | undefined => {
+                      if (!s || typeof s !== 'string') return undefined;
+                      return s.replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/g, '').trim().slice(0, maxLen);
+                    };
                     setLiveMessage({
-                      title: data.title,
-                      message: data.message || '...'
+                      title: sanitize(data.title, 100),
+                      message: sanitize(data.message, 500) || '...'
                     });
                     setBearState('love');
                   }

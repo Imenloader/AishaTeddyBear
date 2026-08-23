@@ -1,0 +1,4 @@
+﻿## 2026-08-23 - [Public ntfy.sh Topic = Unauthenticated Message Injection]
+**Vulnerability:** The ntfy.sh topic name is hardcoded in the client-side JS bundle. ntfy.sh topics are public and unauthenticated by default. Anyone who extracts the topic name from the minified bundle can POST arbitrary messages that the app will display as 'live messages from the fiance'.
+**Learning:** Client-side apps cannot keep shared secrets. A topic name embedded in a JS bundle is not a secret - it's public. The app architecture inherently trusts any message posted to the topic.
+**Prevention:** For true sender verification, use a backend relay with authentication (e.g. Firebase Cloud Messaging with auth tokens). As a defense-in-depth measure for the current architecture, always sanitize and length-limit all incoming ntfy messages before rendering.
