@@ -20,6 +20,9 @@ interface SecretsState {
   isFinaleTriggered: boolean;
   triggerFinale: () => void;
   
+  seenFinales: string[];
+  addSeenFinale: (id: string) => void;
+  
   hasSkippedCamera: boolean;
   setHasSkippedCamera: (skipped: boolean) => void;
   
@@ -52,6 +55,11 @@ export const useSecretsStore = create<SecretsState>()(
       isFinaleTriggered: false,
       triggerFinale: () => set({ isFinaleTriggered: true }),
 
+      seenFinales: [],
+      addSeenFinale: (id) => set((state) => ({
+        seenFinales: state.seenFinales.includes(id) ? state.seenFinales : [...state.seenFinales, id]
+      })),
+
       hasSkippedCamera: false,
       setHasSkippedCamera: (skipped) => set({ hasSkippedCamera: skipped }),
       
@@ -71,6 +79,7 @@ export const useSecretsStore = create<SecretsState>()(
       name: 'aisha-teddy-storage',
       partialize: (state) => ({ 
         discoveredSecrets: state.discoveredSecrets,
+        seenFinales: state.seenFinales,
         isFinaleTriggered: state.isFinaleTriggered,
         hasSkippedCamera: state.hasSkippedCamera,
         appMode: state.appMode

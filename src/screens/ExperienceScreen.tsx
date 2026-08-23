@@ -47,10 +47,18 @@ export const ExperienceScreen = () => {
 
   useEffect(() => {
     const modeUnlockedCount = SECRETS.filter(s => discoveredSecrets.includes(s.id)).length;
-    if (modeUnlockedCount >= SECRETS.length && !isFinaleTriggered) {
-      triggerFinale();
+    
+    // Every 7 secrets triggers a finale
+    if (modeUnlockedCount > 0 && modeUnlockedCount % 7 === 0 && !isFinaleTriggered) {
+      const finaleId = `${appMode}_${modeUnlockedCount}`;
+      const seenFinales = useSecretsStore.getState().seenFinales;
+      
+      if (!seenFinales.includes(finaleId)) {
+        useSecretsStore.getState().addSeenFinale(finaleId);
+        triggerFinale();
+      }
     }
-  }, [discoveredSecrets, isFinaleTriggered, triggerFinale, SECRETS]);
+  }, [discoveredSecrets, isFinaleTriggered, triggerFinale, SECRETS, appMode]);
 
   useEffect(() => {
     if (isFinaleTriggered) {

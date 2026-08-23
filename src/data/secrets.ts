@@ -1,4 +1,5 @@
 import { SecretMessage, FinalSecret } from '../types';
+import { FINALES_SOUL, FINALES_HEART, FINALES_SPARKLE, FINALES_DREAM } from './finaleMessages';
 
 export const SECRETS_SOUL: SecretMessage[] = [
   { id: 'welcome', gesture: 'Open_Palm', state: 'happy', variants: [
@@ -2904,13 +2905,21 @@ export const FINAL_SECRET_ULTIMATE: FinalSecret = {
   message: 'يا رفيقة دربي، يا أجمل اختياراتي وأعظم أرزاقي.. النهارده إنتي فتحتي كل الرسايل، وكل الأسرار اللي في قلبي، بس الحقيقة إن حبي ليكي ملوش نهاية وملوش حد. الأبلكيشن ده كان مجرد مساحة صغيرة عشان أقولك فيها إني بحبك في كل أحوالك، وإني دايماً فخور بيكي. شكراً على كل لحظة، وكل دعوة، وكل ضحكة بيننا. بدعي ربنا يجمعنا على خير قريب أوي، ونعيش كل اللي باقي من عمرنا سوا، حلال وفي طاعة ربنا. بحبك يا عائشة.. بحبك أكتر من أي كلام.'
 };
 
-export const getFinalSecret = (mode: 'soul' | 'heart' | 'sparkle' | 'dream', isUltimate: boolean = false) => {
+export const getFinalSecret = (mode: 'soul' | 'heart' | 'sparkle' | 'dream', isUltimate: boolean = false, unlockedCount: number = 7) => {
   if (isUltimate) return FINAL_SECRET_ULTIMATE;
+  
+  // Every 7 secrets is a set, so index is floor((unlockedCount - 1) / 7)
+  const setIndex = Math.max(0, Math.floor((unlockedCount - 1) / 7));
+  
+  let finalesArray;
   switch(mode) {
-    case 'heart': return FINAL_SECRET_HEART;
-    case 'sparkle': return FINAL_SECRET_SPARKLE;
-    case 'dream': return FINAL_SECRET_DREAM;
+    case 'heart': finalesArray = FINALES_HEART; break;
+    case 'sparkle': finalesArray = FINALES_SPARKLE; break;
+    case 'dream': finalesArray = FINALES_DREAM; break;
     case 'soul':
-    default: return FINAL_SECRET_SOUL;
+    default: finalesArray = FINALES_SOUL; break;
   }
+
+  // If she unlocked more sets than we have finales, wrap around or return the last one
+  return finalesArray[Math.min(setIndex, finalesArray.length - 1)];
 };

@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSecretsStore } from '../store/useSecretsStore';
-import { getFinalSecret } from '../data/secrets';
+import { getFinalSecret, getSecrets } from '../data/secrets';
 import { TeddyBear } from '../components/TeddyBear';
 import { RotateCcw } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -11,8 +11,11 @@ const heartEmojis = ['💖', '💗', '💝'];
 export const FinaleScreen = () => {
   const { currentBearState, setBearState, reset, appMode, discoveredSecrets } = useSecretsStore();
   
+  const SECRETS = getSecrets(appMode);
+  const modeUnlockedCount = SECRETS.filter((s: any) => discoveredSecrets.includes(s.id)).length;
+  
   const isUltimate = discoveredSecrets.length >= 400;
-  const FINAL_SECRET = getFinalSecret(appMode, isUltimate);
+  const FINAL_SECRET = getFinalSecret(appMode, isUltimate, modeUnlockedCount);
   
   const [phase, setPhase] = useState<1 | 2 | 3>(1);
   const [typedMessage, setTypedMessage] = useState('');
