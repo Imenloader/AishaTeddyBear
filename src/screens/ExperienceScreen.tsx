@@ -248,11 +248,13 @@ export const ExperienceScreen = () => {
 
   useEffect(() => {
     let lastMsgId = '';
+    let isMounted = true; // BUG FIX: Guard against state updates after unmount
     let ws: WebSocket;
 
     const connectWebSocket = () => {
       ws = new WebSocket('wss://ntfy.sh/aisha_teddy_love_secret_2026/ws');
       ws.onmessage = (e) => {
+        if (!isMounted) return; // BUG FIX: Don't update state if unmounted
         try {
           const data = JSON.parse(e.data);
           
@@ -285,6 +287,7 @@ export const ExperienceScreen = () => {
     connectWebSocket();
 
     const handleVisibilityChange = async () => {
+      if (!isMounted) return; // BUG FIX: Don't proceed if unmounted
       if (document.visibilityState === 'visible') {
         if (ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
           connectWebSocket();
@@ -292,6 +295,7 @@ export const ExperienceScreen = () => {
 
         try {
           const res = await fetch('https://ntfy.sh/aisha_teddy_love_secret_2026/json?poll=1');
+          if (!isMounted) return; // BUG FIX: Check again after async gap
           const text = await res.text();
           const lines = text.trim().split('\n').filter(Boolean);
           
@@ -329,6 +333,7 @@ export const ExperienceScreen = () => {
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
+      isMounted = false; // BUG FIX: Signal all handlers to stop updating state
       ws.close();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
