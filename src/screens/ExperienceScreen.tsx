@@ -51,7 +51,7 @@ export const ExperienceScreen = () => {
     // Every 7 secrets triggers a finale
     if (modeUnlockedCount > 0 && modeUnlockedCount % 7 === 0 && !isFinaleTriggered) {
       const finaleId = `${appMode}_${modeUnlockedCount}`;
-      const seenFinales = useSecretsStore.getState().seenFinales;
+      const seenFinales = useSecretsStore.getState().seenFinales || [];
       
       if (!seenFinales.includes(finaleId)) {
         useSecretsStore.getState().addSeenFinale(finaleId);

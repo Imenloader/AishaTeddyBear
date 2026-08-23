@@ -56,9 +56,12 @@ export const useSecretsStore = create<SecretsState>()(
       triggerFinale: () => set({ isFinaleTriggered: true }),
 
       seenFinales: [],
-      addSeenFinale: (id) => set((state) => ({
-        seenFinales: state.seenFinales.includes(id) ? state.seenFinales : [...state.seenFinales, id]
-      })),
+      addSeenFinale: (id) => set((state) => {
+        const currentSeen = state.seenFinales || [];
+        return {
+          seenFinales: currentSeen.includes(id) ? currentSeen : [...currentSeen, id]
+        };
+      }),
 
       hasSkippedCamera: false,
       setHasSkippedCamera: (skipped) => set({ hasSkippedCamera: skipped }),
@@ -78,9 +81,8 @@ export const useSecretsStore = create<SecretsState>()(
     {
       name: 'aisha-teddy-storage',
       partialize: (state) => ({ 
-        discoveredSecrets: state.discoveredSecrets,
-        seenFinales: state.seenFinales,
-        isFinaleTriggered: state.isFinaleTriggered,
+        discoveredSecrets: state.discoveredSecrets || [],
+        seenFinales: state.seenFinales || [],
         hasSkippedCamera: state.hasSkippedCamera,
         appMode: state.appMode
       }),
