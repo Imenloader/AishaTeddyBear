@@ -60,8 +60,9 @@ export default function App() {
               {/* Menu Toggle Button */}
               <button
                 onClick={() => setIsNavExpanded(!isNavExpanded)}
-                className="bg-white/70 backdrop-blur-md shadow-sm border border-white/50 w-12 h-12 rounded-2xl flex items-center justify-center text-xl text-rose-500 hover:bg-white hover:scale-105 transition-all"
-                title="القائمة"
+                className="bg-white/70 backdrop-blur-md shadow-sm border border-white/50 w-12 h-12 rounded-2xl flex items-center justify-center text-xl text-rose-500 hover:bg-white hover:scale-105 transition-all outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                aria-label={isNavExpanded ? 'إغلاق القائمة' : 'فتح القائمة'}
+                aria-expanded={isNavExpanded}
               >
                 {isNavExpanded ? '✖' : '☰'}
               </button>

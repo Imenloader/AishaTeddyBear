@@ -851,7 +851,8 @@ export const ExperienceScreen = () => {
             <div className="flex justify-center gap-3 w-full flex-wrap">
                <button
                  onClick={() => setIsOpenWhenMenuOpen(true)}
-                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors"
+                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                 aria-label="جوابات افتحيها لما"
                  title="جوابات افتحيها لما"
                >
                  <span className="text-xl">📬</span>
@@ -859,35 +860,40 @@ export const ExperienceScreen = () => {
 
                <button
                  onClick={() => setIsDhikrMode(true)}
-                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors"
+                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                 aria-label="جلسة تسبيح"
                  title="جلسة تسبيح"
                >
                  <span className="text-xl">📿</span>
                </button>
                <button
                  onClick={openLoveJar}
-                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors"
+                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                 aria-label="برطمان الحب"
                  title="برطمان الحب"
                >
                  <span className="text-xl">🫙</span>
                </button>
                <button
                  onClick={triggerSleepGuardian}
-                 className="flex flex-col items-center justify-center bg-slate-800/80 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-slate-700 hover:bg-slate-900 transition-colors"
+                 className="flex flex-col items-center justify-center bg-slate-800/80 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-slate-700 hover:bg-slate-900 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+                 aria-label="حارس النوم"
                  title="حارس النوم"
                >
                  <span className="text-xl">📖</span>
                </button>
                <button
                  onClick={openFridayLetter}
-                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors"
+                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                 aria-label="رسالة الجمعة"
                  title="رسالة الجمعة"
                >
                  <span className="text-xl">💌</span>
                </button>
                <button
                  onClick={triggerPanic}
-                 className="flex flex-col items-center justify-center bg-rose-50/80 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-rose-200 hover:bg-rose-100 transition-colors relative overflow-hidden group"
+                 className="flex flex-col items-center justify-center bg-rose-50/80 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-rose-200 hover:bg-rose-100 transition-colors relative overflow-hidden group outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                 aria-label="محتاجة دعوة"
                  title="محتاجة دعوة"
                >
                  <div className="absolute inset-0 bg-rose-400 opacity-0 group-hover:opacity-10 transition-opacity" />
@@ -962,7 +968,8 @@ export const ExperienceScreen = () => {
                   {/* Toggle Button */}
                   <button 
                     onClick={() => setShowDailyMsg(!showDailyMsg)}
-                    className="absolute top-3 left-3 w-8 h-8 flex items-center justify-center bg-black/5 rounded-full hover:bg-black/10 transition-colors text-lg shadow-sm"
+                    className="absolute top-3 left-3 w-8 h-8 flex items-center justify-center bg-black/5 rounded-full hover:bg-black/10 transition-colors text-lg shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                    aria-label={showDailyMsg ? 'عرض سؤال النهاردة' : 'عرض رسالة اليوم'}
                   >
                     {showDailyMsg ? '🤔' : '💌'}
                   </button>

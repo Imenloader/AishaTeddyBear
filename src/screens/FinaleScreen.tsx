@@ -147,7 +147,8 @@ export const FinaleScreen = () => {
     >
       <button 
         onClick={handleClose}
-        className="absolute top-6 left-6 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-bold border border-white/20 transition-all z-50 flex items-center gap-2"
+        className="absolute top-6 left-6 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-bold border border-white/20 transition-all z-50 flex items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+        aria-label="رجوع للشاشة الرئيسية"
       >
         رجوع <span>↩</span>
       </button>
@@ -238,7 +239,8 @@ export const FinaleScreen = () => {
                   
                   <button 
                     onClick={handleClose}
-                    className="flex items-center gap-2 text-indigo-300/60 hover:text-indigo-200 text-sm transition-colors"
+                    className="flex items-center gap-2 text-indigo-300/60 hover:text-indigo-200 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 rounded-full px-2 py-1"
+                    aria-label="إعادة التجربة"
                   >
                     <RotateCcw size={16} />
                     <span>إعادة التجربة</span>
