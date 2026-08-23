@@ -121,7 +121,7 @@ export const WelcomeScreen = () => {
       {hasExistingMode && (
         <button 
           onClick={() => setScreen('experience')}
-          className="absolute top-6 left-6 px-4 py-2 bg-white/70 hover:bg-white backdrop-blur-sm text-slate-600 rounded-full text-sm font-bold shadow-sm border border-white/60 transition-all z-50 flex items-center gap-2"
+          className="absolute top-6 left-4 px-3 py-1.5 bg-white/70 hover:bg-white backdrop-blur-sm text-slate-600 rounded-full text-xs font-bold shadow-sm border border-white/60 transition-all z-50 flex items-center gap-1"
         >
           رجوع <span>↩</span>
         </button>
@@ -139,7 +139,7 @@ export const WelcomeScreen = () => {
       </div>
 
       {/* Cute Floating Pill Menu */}
-      <div className="absolute top-6 z-50 flex gap-1.5 bg-white/40 backdrop-blur-md p-1.5 rounded-full shadow-sm border border-white/60">
+      <div className="absolute top-20 z-50 flex gap-1.5 bg-white/40 backdrop-blur-md p-1.5 rounded-full shadow-sm border border-white/60">
         {modes.map(mode => (
           <button
             key={mode.id}
