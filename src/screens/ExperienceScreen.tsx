@@ -2,8 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSecretsStore } from '../store/useSecretsStore';
 import { getSecrets } from '../data/secrets';
-import { getDailyMessage, FRIDAY_LETTERS, getDailyQuestion } from '../data/dailyContent';
-import { OPEN_WHEN_LETTERS, OpenWhenLetter } from '../data/openWhen';
+import { getDailyMessage, FRIDAY_LETTERS } from '../data/dailyContent';
 import { LOVE_REASONS, EMERGENCY_DUAAS } from '../data/loveJar';
 import { CameraFeed } from '../components/CameraFeed';
 import { TeddyBear } from '../components/TeddyBear';
@@ -192,15 +191,12 @@ export const ExperienceScreen = () => {
   const [isOpenWhenMenuOpen, setIsOpenWhenMenuOpen] = useState(false);
   const [selectedOpenWhen, setSelectedOpenWhen] = useState<OpenWhenLetter | null>(null);
   const [dailyQuestion] = useState(() => getDailyQuestion());
-  const [showDailyMsg, setShowDailyMsg] = useState(true); // Toggle between msg and question
+  const [showDailyMsg, setShowDailyMsg] = useState(true);
   const [showPrayedSent, setShowPrayedSent] = useState(false);
-
   const [liveMessage, setLiveMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    // Listen for live messages from fiancé
     const eventSource = new EventSource('https://ntfy.sh/aisha_teddy_love_secret_2026_live/sse');
-    
     eventSource.onmessage = (e) => {
       try {
         const data = JSON.parse(e.data);
@@ -208,16 +204,10 @@ export const ExperienceScreen = () => {
           setLiveMessage(data.message);
           setBearState('love');
         }
-      } catch (err) {
-        console.error('Error parsing live message', err);
-      }
+      } catch (err) {}
     };
-
-    return () => {
-      eventSource.close();
-    };
+    return () => eventSource.close();
   }, [setBearState]);
-
 
 
   const [countdown, setCountdown] = useState({ months: 0, days: 0, hours: 0 });
@@ -270,24 +260,17 @@ export const ExperienceScreen = () => {
   const sendPrayedForYou = async () => {
     try {
       setShowPrayedSent(true);
-      await fetch(`https://ntfy.sh/aisha_teddy_love_secret_2026?title=${encodeURIComponent('دعيتلك يا دبدوب 🤲')}&message=${encodeURIComponent('عائشة لسه مخلصة صلاة ودعتلك دلوقتي حالاً! ❤️')}&tags=pray,sparkles`, {
-        method: 'POST'
-      });
+      await fetch(`https://ntfy.sh/aisha_teddy_love_secret_2026?title=${encodeURIComponent('دعيتلك يا دبدوب 🤲')}&message=${encodeURIComponent('عائشة لسه مخلصة صلاة ودعتلك دلوقتي حالاً! ❤️')}&tags=pray,sparkles`, { method: 'POST' });
       setTimeout(() => setShowPrayedSent(false), 5000);
     } catch (e) {
-      console.error(e);
       setTimeout(() => setShowPrayedSent(false), 5000);
     }
   };
   
   const sendOpenWhenNotification = async (topic: string, title: string) => {
     try {
-      await fetch(`https://ntfy.sh/aisha_teddy_love_secret_2026?title=${encodeURIComponent('رسالة: ' + title)}&message=${encodeURIComponent('عائشة فتحت جواب: ' + title + ' 💌')}&tags=envelope`, {
-        method: 'POST'
-      });
-    } catch (e) {
-      console.error(e);
-    }
+      await fetch(`https://ntfy.sh/aisha_teddy_love_secret_2026?title=${encodeURIComponent('رسالة: ' + title)}&message=${encodeURIComponent('عائشة فتحت جواب: ' + title + ' 💌')}&tags=envelope`, { method: 'POST' });
+    } catch (e) {}
   };
 
   const sendThought = async () => {
@@ -544,13 +527,12 @@ export const ExperienceScreen = () => {
                 onClick={() => setSelectedOpenWhen(null)}
                 className="mt-8 px-6 py-2 bg-rose-100 hover:bg-rose-200 text-rose-800 rounded-full text-sm font-bold transition-colors"
               >
-                اقفلي الجواب (رجوع ↩)
+                اقفلي الجواب ↩
               </button>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
 
       {/* Live Message Modal */}
       <AnimatePresence>
@@ -748,7 +730,6 @@ export const ExperienceScreen = () => {
             </button>
           </motion.div>
         ) : (
-          
           <motion.div
             key="dashboard"
             initial={{ opacity: 0 }}
@@ -756,21 +737,70 @@ export const ExperienceScreen = () => {
             exit={{ opacity: 0 }}
             className="w-full px-4 mb-4 z-20 flex flex-col gap-4"
           >
-            {/* Daily Connection (Thought & Prayed) */}
-            <div className="grid grid-cols-2 gap-3 w-full">
+            {/* Action Toolbar */}
+            <div className="flex justify-center gap-3 w-full flex-wrap">
+               <button
+                 onClick={() => setIsOpenWhenMenuOpen(true)}
+                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors"
+                 title="جوابات افتحيها لما"
+               >
+                 <span className="text-xl">📬</span>
+               </button>
+
+               <button
+                 onClick={() => setIsDhikrMode(true)}
+                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors"
+                 title="جلسة تسبيح"
+               >
+                 <span className="text-xl">📿</span>
+               </button>
+               <button
+                 onClick={openLoveJar}
+                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors"
+                 title="برطمان الحب"
+               >
+                 <span className="text-xl">🫙</span>
+               </button>
+               <button
+                 onClick={triggerSleepGuardian}
+                 className="flex flex-col items-center justify-center bg-slate-800/80 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-slate-700 hover:bg-slate-900 transition-colors"
+                 title="حارس النوم"
+               >
+                 <span className="text-xl">📖</span>
+               </button>
+               <button
+                 onClick={openFridayLetter}
+                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors"
+                 title="رسالة الجمعة"
+               >
+                 <span className="text-xl">💌</span>
+               </button>
+               <button
+                 onClick={triggerPanic}
+                 className="flex flex-col items-center justify-center bg-rose-50/80 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-rose-200 hover:bg-rose-100 transition-colors relative overflow-hidden group"
+                 title="محتاجة دعوة"
+               >
+                 <div className="absolute inset-0 bg-rose-400 opacity-0 group-hover:opacity-10 transition-opacity" />
+                 <span className="text-xl animate-pulse">🤲</span>
+               </button>
+            </div>
+
+            
+            {/* Connection Buttons */}
+            <div className="flex gap-3 w-full">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={sendThought}
                 disabled={showThoughtSent}
-                className={`py-3 rounded-2xl shadow-sm font-bold flex flex-col items-center justify-center gap-1 transition-all ${
+                className={`flex-1 py-3 rounded-2xl shadow-sm font-bold flex items-center justify-center gap-2 transition-all ${
                   showThoughtSent 
-                    ? 'bg-rose-50 text-rose-500 border border-rose-200'
+                    ? 'bg-white/80 text-rose-500 border border-rose-200'
                     : 'bg-white/70 backdrop-blur-md text-slate-700 hover:bg-white border border-white/50'
                 }`}
               >
-                <span className="text-2xl">{showThoughtSent ? '🥰' : '💭'}</span>
-                <span className="text-xs">{showThoughtSent ? 'وصلتله وفرح!' : 'فكرت فيك دلوقتي'}</span>
+                <span className="text-sm">{showThoughtSent ? 'فرح بيها!' : 'فكرت فيك'}</span>
+                <span className="text-xl">{showThoughtSent ? '🥰' : '💭'}</span>
               </motion.button>
 
               <motion.button
@@ -778,18 +808,19 @@ export const ExperienceScreen = () => {
                 whileTap={{ scale: 0.95 }}
                 onClick={sendPrayedForYou}
                 disabled={showPrayedSent}
-                className={`py-3 rounded-2xl shadow-sm font-bold flex flex-col items-center justify-center gap-1 transition-all ${
+                className={`flex-1 py-3 rounded-2xl shadow-sm font-bold flex items-center justify-center gap-2 transition-all ${
                   showPrayedSent 
                     ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
                     : 'bg-white/70 backdrop-blur-md text-slate-700 hover:bg-white border border-white/50'
                 }`}
               >
-                <span className="text-2xl">{showPrayedSent ? '🤍' : '🤲'}</span>
-                <span className="text-xs">{showPrayedSent ? 'دعوتك وصلتله!' : 'دعيتلك النهاردة'}</span>
+                <span className="text-sm">{showPrayedSent ? 'وصلتله!' : 'دعيتلك'}</span>
+                <span className="text-xl">{showPrayedSent ? '🤍' : '🤲'}</span>
               </motion.button>
             </div>
 
-            {/* Daily Message & Question Card */}
+
+            {/* Daily Message Card */}
             <AnimatePresence mode="wait">
               {isPanicMode ? (
                 <motion.div 
@@ -797,10 +828,9 @@ export const ExperienceScreen = () => {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  className="bg-rose-100 backdrop-blur-md rounded-2xl p-5 shadow-lg border border-rose-300 text-center relative overflow-hidden" 
+                  className="bg-rose-100 backdrop-blur-md rounded-2xl p-5 shadow-lg border border-rose-300 text-center" 
                   dir="rtl"
                 >
-                  <div className="absolute inset-0 bg-red-500/5 animate-pulse" />
                   <h3 className="text-rose-800 font-bold mb-2">رسالة طوارئ من حبيبك 💌</h3>
                   <p className="text-rose-900 font-medium leading-relaxed">{panicDuaa}</p>
                   <button 
@@ -812,18 +842,17 @@ export const ExperienceScreen = () => {
                 </motion.div>
               ) : (
                 <motion.div 
-                  key="daily-card"
+                  key="daily"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className={`backdrop-blur-md rounded-2xl p-5 shadow-sm border border-white/50 text-center relative ${showDailyMsg ? (dailyMsg.type === 'friday_letter' ? 'bg-rose-50' : 'bg-white/80') : 'bg-indigo-50/80'}`} 
+                  className={`relative backdrop-blur-md rounded-2xl p-5 shadow-sm border border-white/50 text-center ${dailyMsg.type === 'friday_letter' ? 'bg-rose-50' : 'bg-white/80'}`} 
                   dir="rtl"
                 >
                   {/* Toggle Button */}
                   <button 
                     onClick={() => setShowDailyMsg(!showDailyMsg)}
-                    className="absolute top-3 left-3 w-8 h-8 flex items-center justify-center bg-white/50 rounded-full hover:bg-white transition-colors text-lg shadow-sm"
-                    title="تغيير البطاقة"
+                    className="absolute top-3 left-3 w-8 h-8 flex items-center justify-center bg-black/5 rounded-full hover:bg-black/10 transition-colors text-lg shadow-sm"
                   >
                     {showDailyMsg ? '🤔' : '💌'}
                   </button>
@@ -842,34 +871,6 @@ export const ExperienceScreen = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {/* Horizontal Feature Drawer */}
-            <div className="flex gap-3 overflow-x-auto pb-2 pt-1 px-1 snap-x hide-scrollbar" dir="rtl">
-               <button onClick={() => setIsOpenWhenMenuOpen(true)} className="flex-none snap-center flex flex-col items-center justify-center bg-white/80 backdrop-blur-md w-20 h-20 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-all hover:-translate-y-1">
-                 <span className="text-2xl mb-1">📬</span>
-                 <span className="text-[10px] font-bold text-slate-600 text-center leading-tight">جوابات<br/>افتحيها لما</span>
-               </button>
-               <button onClick={openLoveJar} className="flex-none snap-center flex flex-col items-center justify-center bg-white/80 backdrop-blur-md w-20 h-20 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-all hover:-translate-y-1">
-                 <span className="text-2xl mb-1">🫙</span>
-                 <span className="text-[10px] font-bold text-slate-600 text-center leading-tight">برطمان<br/>الحب</span>
-               </button>
-               <button onClick={() => setIsDhikrMode(true)} className="flex-none snap-center flex flex-col items-center justify-center bg-white/80 backdrop-blur-md w-20 h-20 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-all hover:-translate-y-1">
-                 <span className="text-2xl mb-1">📿</span>
-                 <span className="text-[10px] font-bold text-slate-600 text-center leading-tight">جلسة<br/>تسبيح</span>
-               </button>
-               <button onClick={triggerSleepGuardian} className="flex-none snap-center flex flex-col items-center justify-center bg-slate-800/80 backdrop-blur-md w-20 h-20 rounded-2xl shadow-sm border border-slate-700 hover:bg-slate-900 transition-all hover:-translate-y-1">
-                 <span className="text-2xl mb-1">📖</span>
-                 <span className="text-[10px] font-bold text-slate-300 text-center leading-tight">حارس<br/>النوم</span>
-               </button>
-               <button onClick={openFridayLetter} className="flex-none snap-center flex flex-col items-center justify-center bg-white/80 backdrop-blur-md w-20 h-20 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-all hover:-translate-y-1">
-                 <span className="text-2xl mb-1">💌</span>
-                 <span className="text-[10px] font-bold text-slate-600 text-center leading-tight">رسالة<br/>الجمعة</span>
-               </button>
-               <button onClick={triggerPanic} className="flex-none snap-center flex flex-col items-center justify-center bg-rose-50/90 backdrop-blur-md w-20 h-20 rounded-2xl shadow-sm border border-rose-200 hover:bg-rose-100 transition-all hover:-translate-y-1">
-                 <span className="text-2xl mb-1 animate-pulse">🚨</span>
-                 <span className="text-[10px] font-bold text-rose-600 text-center leading-tight">رسالة<br/>طوارئ</span>
-               </button>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
