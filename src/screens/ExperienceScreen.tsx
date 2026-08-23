@@ -673,7 +673,7 @@ export const ExperienceScreen = () => {
 
       {/* Constellations (Hidden in Dhikr & Sleep Mode) */}
       {!isDhikrMode && !isSleepGuardian && (
-        <div className="absolute top-8 left-1/2 -translate-x-1/2 z-0 opacity-80 mt-12 transition-all duration-1000 ease-in-out">
+        <div className="w-full flex justify-center pt-2 z-10 shrink-0">
           <div className="relative w-48 h-24">
             <svg className="absolute top-0 left-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
               {STAR_POINTS.map((p, i) => {
