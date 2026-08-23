@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSecretsStore } from '../store/useSecretsStore';
 import { getSecrets } from '../data/secrets';
+import { getDailyMessage } from '../data/dailyContent';
 import { CameraFeed } from '../components/CameraFeed';
 import { TeddyBear } from '../components/TeddyBear';
 import { FloatingParticles } from '../components/FloatingParticles';
@@ -168,7 +169,24 @@ export const ExperienceScreen = () => {
     return 'mixed';
   };
 
+  const [dailyMsg] = useState(() => getDailyMessage(appMode));
+  const [isDhikrMode, setIsDhikrMode] = useState(false);
+  const [dhikrStep, setDhikrStep] = useState(0);
+
+  const dhikrWords = ['سبحان الله', 'الحمد لله', 'الله أكبر'];
+
+  useEffect(() => {
+    let dhikrInterval: NodeJS.Timeout;
+    if (isDhikrMode) {
+      dhikrInterval = setInterval(() => {
+        setDhikrStep((prev) => (prev + 1) % dhikrWords.length);
+      }, 4000); // Change word every 4 seconds (matches breathing scale)
+    }
+    return () => clearInterval(dhikrInterval);
+  }, [isDhikrMode]);
+
   const onBearClick = (e: React.MouseEvent) => {
+    if (isDhikrMode) return;
     setRipple({ x: e.clientX, y: e.clientY, id: Date.now() });
     handleGesture('Open_Palm');
   };
@@ -178,13 +196,16 @@ export const ExperienceScreen = () => {
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
       exit={{ opacity: 0 }}
-      className="flex flex-col items-center justify-between h-full p-4 relative overflow-hidden flex-1 w-full"
+      className="flex flex-col items-center h-full p-4 relative overflow-hidden flex-1 w-full"
     >
-      <div className={`absolute top-0 left-0 w-full h-full -z-20 transition-colors duration-1000 bg-gradient-to-br ${getGradient(currentBearState)}`} />
+      <div className={`absolute top-0 left-0 w-full h-full -z-20 transition-colors duration-1000 bg-gradient-to-br ${isDhikrMode ? 'from-slate-900 via-indigo-900 to-slate-800' : getGradient(currentBearState)}`} />
       
-      <FloatingParticles type={getParticleType(currentBearState) as any} count={20} />
+      {!isDhikrMode && <FloatingParticles type={getParticleType(currentBearState) as any} count={20} />}
 
-      <div className="w-full flex justify-center pt-2 z-10">
+      {/* Constellations (Hidden in Dhikr Mode) */}
+      {!isDhikrMode && (
+        <div className="w-full flex justify-center pt-2 z-10 shrink-0">
+          {/* ... existing constellation code ... */}
         <div className="relative w-48 h-24">
           <svg className="absolute top-0 left-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
             {STAR_POINTS.map((p, i) => {
@@ -220,7 +241,8 @@ export const ExperienceScreen = () => {
             );
           })}
         </div>
-      </div>
+        </div>
+      )}
 
       <div className="h-28 w-full max-w-sm flex items-center justify-center mt-2 z-20">
         <AnimatePresence mode="wait">
@@ -264,12 +286,12 @@ export const ExperienceScreen = () => {
           <motion.div
             key={currentBearState}
             animate={
-              appMode === 'heart' && currentBearState === 'idle'
-                ? { scale: [1, 1.03, 1] } 
+              (isDhikrMode || (appMode === 'heart' && currentBearState === 'idle'))
+                ? { scale: [1, 1.05, 1] } 
                 : { scale: 1 }
             }
             transition={
-              appMode === 'heart' && currentBearState === 'idle'
+              (isDhikrMode || (appMode === 'heart' && currentBearState === 'idle'))
                 ? { scale: { repeat: Infinity, duration: 4, ease: "easeInOut" } }
                 : { type: 'spring', bounce: 0.5 }
             }
@@ -292,6 +314,64 @@ export const ExperienceScreen = () => {
            </motion.div>
          )}
       </div>
+
+      {/* Daily Dashboard & Dhikr Toggle */}
+      <AnimatePresence mode="wait">
+        {isDhikrMode ? (
+          <motion.div
+            key="dhikr"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="w-full flex-1 flex flex-col items-center justify-center z-20"
+          >
+            <motion.h2
+              key={dhikrStep}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.1 }}
+              transition={{ duration: 1 }}
+              className="text-4xl font-extrabold text-white text-center mb-8 drop-shadow-lg"
+              dir="rtl"
+            >
+              {dhikrWords[dhikrStep]}
+            </motion.h2>
+            <p className="text-indigo-200 text-sm mt-8 opacity-80" dir="rtl">خدي نفس عميق مع الدبدوب...</p>
+            <button
+              onClick={() => setIsDhikrMode(false)}
+              className="mt-10 px-6 py-2 rounded-full bg-white/10 text-white border border-white/20 hover:bg-white/20 pointer-events-auto"
+            >
+              رجوع
+            </button>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="dashboard"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="w-full px-4 mb-4 z-20 flex flex-col gap-4"
+          >
+            {/* Dhikr Button */}
+            <div className="flex justify-center w-full">
+               <button
+                 onClick={() => setIsDhikrMode(true)}
+                 className="flex items-center gap-2 bg-white/70 backdrop-blur-md px-4 py-2 rounded-full shadow-sm text-indigo-800 text-sm font-bold border border-white/50"
+                 dir="rtl"
+               >
+                 <span>📿</span>
+                 <span>جلسة تسبيح وهدوء</span>
+               </button>
+            </div>
+
+            {/* Daily Message Card */}
+            <div className={`backdrop-blur-md rounded-2xl p-5 shadow-sm border border-white/50 text-center ${dailyMsg.type === 'friday_letter' ? 'bg-rose-50' : 'bg-white/80'}`} dir="rtl">
+              <h3 className="text-slate-800 font-bold mb-2">{dailyMsg.title}</h3>
+              <p className="text-slate-600 text-sm leading-relaxed">{dailyMsg.content}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {!hasSkippedCamera && (
         <div className="mb-4 z-20">
