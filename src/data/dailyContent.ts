@@ -1,4 +1,4 @@
-﻿import { AppMode } from '../types';
+import { AppMode } from '../types';
 
 const ENDEARMENTS = [
   "يا نور عيني اللي بشوف بيه الدنيا",
@@ -99,17 +99,17 @@ export const getDailyMessage = (mode: AppMode, date: Date = new Date()) => {
 
   switch (mode) {
     case 'heart':
-      content = \\.. \ \ \\;
+      content = `${endearment}.. ${promise} ${duaa} ${action}`;
       break;
     case 'sparkle':
-      content = \\.. \ \ \\;
+      content = `${endearment}.. ${action} ${promise} ${duaa}`;
       break;
     case 'dream':
-      content = \\.. \ \\;
+      content = `${endearment}.. ${quran} ${promise}`;
       break;
     case 'soul':
     default:
-      content = \\.. \ \\;
+      content = `${endearment}.. ${quran} ${duaa}`;
       break;
   }
 
