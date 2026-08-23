@@ -197,20 +197,69 @@ export const ExperienceScreen = () => {
   const [liveMessage, setLiveMessage] = useState<{title?: string, message: string} | null>(null);
 
   useEffect(() => {
-    const eventSource = new EventSource('https://ntfy.sh/aisha_teddy_love_secret_2026_live/sse');
-    eventSource.onmessage = (e) => {
-      try {
-        const data = JSON.parse(e.data);
-        if (data.event === 'message' && (data.message || data.title)) {
-          setLiveMessage({
-            title: data.title,
-            message: data.message || '...'
-          });
-          setBearState('love');
-        }
-      } catch (err) {}
+    let lastMsgId = '';
+    let ws: WebSocket;
+
+    const connectWebSocket = () => {
+      ws = new WebSocket('wss://ntfy.sh/aisha_teddy_love_secret_2026_live/ws');
+      ws.onmessage = (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          if (data.event === 'message' && (data.message || data.title)) {
+            lastMsgId = data.id;
+            setLiveMessage({
+              title: data.title,
+              message: data.message || '...'
+            });
+            setBearState('love');
+          }
+        } catch (err) {}
+      };
     };
-    return () => eventSource.close();
+
+    connectWebSocket();
+
+    // Fallback: If user switches apps (e.g. to ntfy app to send a message) and switches back,
+    // the WebSocket might have slept. We fetch the latest message immediately on wake.
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === 'visible') {
+        // Reconnect WebSocket just in case it died
+        if (ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
+          connectWebSocket();
+        }
+
+        try {
+          const res = await fetch('https://ntfy.sh/aisha_teddy_love_secret_2026_live/json?poll=1');
+          const text = await res.text();
+          const lines = text.trim().split('\n').filter(Boolean);
+          
+          if (lines.length > 0) {
+            const lastLine = lines[lines.length - 1];
+            const data = JSON.parse(lastLine);
+            
+            // Show if it's a new message sent in the last 60 seconds
+            if (data.event === 'message' && (data.message || data.title) && data.id !== lastMsgId) {
+              const now = Date.now() / 1000;
+              if (now - data.time < 60) {
+                lastMsgId = data.id;
+                setLiveMessage({
+                  title: data.title,
+                  message: data.message || '...'
+                });
+                setBearState('love');
+              }
+            }
+          }
+        } catch (err) {}
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      ws.close();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [setBearState]);
 
 
