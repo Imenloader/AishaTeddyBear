@@ -45,6 +45,10 @@ export const ExperienceScreen = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const seenFinales = useSecretsStore(state => state.seenFinales);
+  const addSeenFinale = useSecretsStore(state => state.addSeenFinale);
+  const addCompletedMode = useSecretsStore(state => state.addCompletedMode);
+
   useEffect(() => {
     const modeUnlockedCount = SECRETS.filter(s => discoveredSecrets.includes(s.id)).length;
     
@@ -56,19 +60,19 @@ export const ExperienceScreen = () => {
 
     if ((isModeComplete || isMilestone) && !isFinaleTriggered) {
       const finaleId = isModeComplete ? `${appMode}_complete` : `${appMode}_${modeUnlockedCount}`;
-      const seenFinales = useSecretsStore.getState().seenFinales || [];
+      const currentSeenFinales = seenFinales || [];
       
-      if (!seenFinales.includes(finaleId)) {
-        useSecretsStore.getState().addSeenFinale(finaleId);
+      if (!currentSeenFinales.includes(finaleId)) {
+        addSeenFinale(finaleId);
         
         if (isModeComplete) {
-          useSecretsStore.getState().addCompletedMode(appMode);
+          addCompletedMode(appMode);
         }
         
         triggerFinale();
       }
     }
-  }, [discoveredSecrets, isFinaleTriggered, triggerFinale, SECRETS, appMode]);
+  }, [discoveredSecrets, isFinaleTriggered, triggerFinale, SECRETS, appMode, seenFinales, addSeenFinale, addCompletedMode]);
 
   useEffect(() => {
     if (isFinaleTriggered) {

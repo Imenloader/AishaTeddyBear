@@ -14,7 +14,8 @@ export const FinaleScreen = () => {
   const SECRETS = getSecrets(appMode);
   const modeUnlockedCount = SECRETS.filter((s: any) => discoveredSecrets.includes(s.id)).length;
   
-  const completedModes = useSecretsStore.getState().completedModes || [];
+  const completedModes = useSecretsStore(state => state.completedModes) || [];
+  const resetModeProgress = useSecretsStore(state => state.resetModeProgress);
   const isUltimate = completedModes.length >= 4;
   const FINAL_SECRET = getFinalSecret(appMode, isUltimate, modeUnlockedCount) || {
     state: ['love', 'sleep'],
@@ -133,7 +134,7 @@ export const FinaleScreen = () => {
     if (isUltimate) {
       useSecretsStore.setState({ discoveredSecrets: [], completedModes: [], seenFinales: [] });
     } else if (isModeComplete) {
-      useSecretsStore.getState().resetModeProgress(appMode);
+      resetModeProgress(appMode);
     }
     reset();
   };
