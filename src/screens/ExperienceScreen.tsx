@@ -592,12 +592,20 @@ export const ExperienceScreen = () => {
               <div className="text-4xl mb-4">🫙💌</div>
               <h3 className="font-bold text-slate-800 mb-4" dir="rtl">سبب من مليون سبب يخليني أحبك:</h3>
               <p className="text-rose-700 text-lg leading-relaxed font-medium" dir="rtl">{currentLoveReason}</p>
-              <button 
-                onClick={() => setIsLoveJarOpen(false)}
-                className="mt-6 px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full text-sm font-bold transition-colors"
-              >
-                رجوع ↩
-              </button>
+              <div className="mt-6 flex justify-center gap-4">
+                <button 
+                  onClick={() => setIsLoveJarOpen(false)}
+                  className="px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full text-sm font-bold transition-colors"
+                >
+                  رجوع ↩
+                </button>
+                <button 
+                  onClick={(e) => handleLikeMessage(currentLoveReason, e)}
+                  className="px-4 py-2 bg-pink-50 hover:bg-pink-100 text-pink-600 border border-pink-100 rounded-full text-sm font-bold transition-colors flex items-center gap-2"
+                >
+                  <span>❤️</span>
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -626,12 +634,20 @@ export const ExperienceScreen = () => {
               <p className="text-slate-600 leading-relaxed font-medium" dir="rtl">
                 {fridayLetterContent}
               </p>
-              <button 
-                onClick={() => setIsFridayLetterOpen(false)}
-                className="mt-6 px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full text-sm font-bold transition-colors"
-              >
-                رجوع ↩
-              </button>
+              <div className="mt-6 flex justify-center gap-4">
+                <button 
+                  onClick={() => setIsFridayLetterOpen(false)}
+                  className="px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full text-sm font-bold transition-colors"
+                >
+                  رجوع ↩
+                </button>
+                <button 
+                  onClick={(e) => handleLikeMessage(fridayLetterContent, e)}
+                  className="px-4 py-2 bg-pink-50 hover:bg-pink-100 text-pink-600 border border-pink-100 rounded-full text-sm font-bold transition-colors flex items-center gap-2"
+                >
+                  <span>❤️</span>
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -709,12 +725,20 @@ export const ExperienceScreen = () => {
               <p className="text-slate-700 leading-relaxed font-medium text-lg" dir="rtl">
                 {selectedOpenWhen.message}
               </p>
-              <button 
-                onClick={() => setSelectedOpenWhen(null)}
-                className="mt-8 px-6 py-2 bg-rose-100 hover:bg-rose-200 text-rose-800 rounded-full text-sm font-bold transition-colors"
-              >
-                اقفلي الجواب ↩
-              </button>
+              <div className="mt-8 flex justify-center gap-4">
+                <button 
+                  onClick={() => setSelectedOpenWhen(null)}
+                  className="px-6 py-2 bg-rose-100 hover:bg-rose-200 text-rose-800 rounded-full text-sm font-bold transition-colors"
+                >
+                  اقفلي الجواب ↩
+                </button>
+                <button 
+                  onClick={(e) => handleLikeMessage(selectedOpenWhen.message, e)}
+                  className="px-4 py-2 bg-pink-50 hover:bg-pink-100 text-pink-600 border border-pink-100 rounded-full text-sm font-bold transition-colors flex items-center gap-2"
+                >
+                  <span>❤️</span>
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -743,12 +767,20 @@ export const ExperienceScreen = () => {
               <p className="text-slate-700 leading-relaxed font-bold text-2xl" dir="rtl">
                 {liveMessage.message}
               </p>
-              <button 
-                onClick={() => setLiveMessage(null)}
-                className="mt-8 px-6 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-full text-sm font-bold transition-colors"
-              >
-                رجوع ↩
-              </button>
+              <div className="mt-8 flex justify-center gap-4">
+                <button 
+                  onClick={() => setLiveMessage(null)}
+                  className="px-6 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-full text-sm font-bold transition-colors"
+                >
+                  رجوع ↩
+                </button>
+                <button 
+                  onClick={(e) => handleLikeMessage(liveMessage.message, e)}
+                  className="px-4 py-2 bg-pink-50 hover:bg-pink-100 text-pink-600 border border-pink-100 rounded-full text-sm font-bold transition-colors flex items-center gap-2"
+                >
+                  <span>❤️</span>
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -1039,12 +1071,20 @@ export const ExperienceScreen = () => {
                 >
                   <h3 className="text-rose-800 font-bold mb-2">رسالة طوارئ من حبيبك 💌</h3>
                   <p className="text-rose-900 font-medium leading-relaxed">{panicDuaa}</p>
-                  <button 
-                    onClick={closePanic}
-                    className="mt-4 px-6 py-2 bg-rose-200 hover:bg-rose-300 text-rose-800 rounded-full text-sm font-bold transition-colors"
-                  >
-                    رجوع ↩
-                  </button>
+                  <div className="mt-4 flex justify-center gap-4">
+                    <button 
+                      onClick={closePanic}
+                      className="px-6 py-2 bg-rose-200 hover:bg-rose-300 text-rose-800 rounded-full text-sm font-bold transition-colors"
+                    >
+                      رجوع ↩
+                    </button>
+                    <button 
+                      onClick={(e) => handleLikeMessage(panicDuaa, e)}
+                      className="px-4 py-2 bg-pink-50 hover:bg-pink-100 text-pink-600 border border-pink-100 rounded-full text-sm font-bold transition-colors flex items-center gap-2"
+                    >
+                      <span>❤️</span>
+                    </button>
+                  </div>
                 </motion.div>
               ) : (
                 <motion.div 
@@ -1062,6 +1102,15 @@ export const ExperienceScreen = () => {
                     aria-label={showDailyMsg ? 'عرض سؤال النهاردة' : 'عرض رسالة اليوم'}
                   >
                     {showDailyMsg ? '🤔' : '💌'}
+                  </button>
+
+                  {/* Like Button */}
+                  <button 
+                    onClick={(e) => handleLikeMessage(showDailyMsg ? dailyMsg.content : dailyQuestion, e)}
+                    className="absolute top-3 left-12 w-8 h-8 flex items-center justify-center bg-pink-50 rounded-full hover:bg-pink-100 transition-colors text-sm shadow-sm border border-pink-100 outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                    aria-label="أعجبتني هذه الرسالة"
+                  >
+                    ❤️
                   </button>
                   
                   {showDailyMsg ? (
