@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useSecretsStore } from '../store/useSecretsStore';
 import { getSecrets } from '../data/secrets';
 import { getDailyMessage } from '../data/dailyContent';
+import { LOVE_REASONS, EMERGENCY_DUAAS } from '../data/loveJar';
 import { CameraFeed } from '../components/CameraFeed';
 import { TeddyBear } from '../components/TeddyBear';
 import { FloatingParticles } from '../components/FloatingParticles';
@@ -175,6 +176,41 @@ export const ExperienceScreen = () => {
 
   const dhikrWords = ['سبحان الله', 'الحمد لله', 'الله أكبر'];
 
+  const [isLoveJarOpen, setIsLoveJarOpen] = useState(false);
+  const [currentLoveReason, setCurrentLoveReason] = useState("");
+  
+  const [isSleepGuardian, setIsSleepGuardian] = useState(false);
+  const [sleepGuardianStep, setSleepGuardianStep] = useState(0);
+  
+  const [isPanicMode, setIsPanicMode] = useState(false);
+  const [panicDuaa, setPanicDuaa] = useState("");
+
+  const [countdown, setCountdown] = useState({ months: 0, days: 0, hours: 0 });
+
+  useEffect(() => {
+    // Countdown to Feb 8, 2028
+    const targetDate = new Date('2028-02-08T00:00:00').getTime();
+    
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+      
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        
+        const months = Math.floor(days / 30);
+        const remainingDays = days % 30;
+        
+        setCountdown({ months, days: remainingDays, hours });
+      }
+    };
+    
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000 * 60 * 60); // Update every hour
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     let dhikrInterval: NodeJS.Timeout;
     if (isDhikrMode) {
@@ -184,6 +220,42 @@ export const ExperienceScreen = () => {
     }
     return () => clearInterval(dhikrInterval);
   }, [isDhikrMode]);
+
+  const openLoveJar = () => {
+    setCurrentLoveReason(LOVE_REASONS[Math.floor(Math.random() * LOVE_REASONS.length)]);
+    setIsLoveJarOpen(true);
+  };
+
+  const triggerPanic = () => {
+    setPanicDuaa(EMERGENCY_DUAAS[Math.floor(Math.random() * EMERGENCY_DUAAS.length)]);
+    setIsPanicMode(true);
+    setBearState('love');
+    setTimeout(() => {
+      setIsPanicMode(false);
+      setBearState('idle');
+    }, 8000);
+  };
+
+  const SLEEP_SURAHS = [
+    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\nاللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ...",
+    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\nقُلْ هُوَ اللَّهُ أَحَدٌ ﴿1﴾ اللَّهُ الصَّمَدُ ﴿2﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿3﴾ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴿4﴾",
+    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\nقُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿1﴾ مِن شَرِّ مَا خَلَقَ...",
+    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\nقُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿1﴾ مَلِكِ النَّاسِ...",
+    "قرأتهم؟ يلا نامي بقى، الملائكة هتحرسك وأنا هستودعك ربنا. تصبحي على خير يا روحي 💖"
+  ];
+
+  const triggerSleepGuardian = () => {
+    setIsSleepGuardian(true);
+    setSleepGuardianStep(0);
+  };
+
+  const nextSleepStep = () => {
+    if (sleepGuardianStep < SLEEP_SURAHS.length - 1) {
+      setSleepGuardianStep(prev => prev + 1);
+    } else {
+      setIsSleepGuardian(false);
+    }
+  };
 
   const onBearClick = (e: React.MouseEvent) => {
     if (isDhikrMode) return;
@@ -198,12 +270,98 @@ export const ExperienceScreen = () => {
       exit={{ opacity: 0 }}
       className="flex flex-col items-center h-full p-4 relative overflow-hidden flex-1 w-full"
     >
-      <div className={`absolute top-0 left-0 w-full h-full -z-20 transition-colors duration-1000 bg-gradient-to-br ${isDhikrMode ? 'from-slate-900 via-indigo-900 to-slate-800' : getGradient(currentBearState)}`} />
+      <div className={`absolute top-0 left-0 w-full h-full -z-20 transition-colors duration-1000 bg-gradient-to-br ${isDhikrMode ? 'from-slate-900 via-indigo-900 to-slate-800' : isSleepGuardian ? 'from-black via-slate-950 to-black' : getGradient(currentBearState)}`} />
       
-      {!isDhikrMode && <FloatingParticles type={getParticleType(currentBearState) as any} count={20} />}
+      {!isDhikrMode && !isSleepGuardian && <FloatingParticles type={getParticleType(currentBearState) as any} count={20} />}
 
-      {/* Constellations (Hidden in Dhikr Mode) */}
-      {!isDhikrMode && (
+      {/* Sleep Guardian Overlay */}
+      <AnimatePresence>
+        {isSleepGuardian && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 flex flex-col items-center justify-center p-8 bg-black/90 backdrop-blur-md"
+            onClick={nextSleepStep}
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              key={sleepGuardianStep}
+              className="text-white text-center font-serif text-xl leading-loose"
+              dir="rtl"
+            >
+              <pre className="whitespace-pre-wrap font-serif leading-loose text-center text-indigo-100">
+                {SLEEP_SURAHS[sleepGuardianStep]}
+              </pre>
+            </motion.div>
+            
+            {sleepGuardianStep < SLEEP_SURAHS.length - 1 && (
+              <motion.div 
+                animate={{ y: [0, 5, 0] }} 
+                transition={{ repeat: Infinity, duration: 2 }}
+                className="absolute bottom-10 text-slate-400 text-sm"
+              >
+                اضغطي للتالي 👆
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Love Jar Modal */}
+      <AnimatePresence>
+        {isLoveJarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm"
+            onClick={() => setIsLoveJarOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 20 }}
+              className="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center relative overflow-hidden"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-rose-400 to-pink-500" />
+              <div className="text-4xl mb-4">🫙💌</div>
+              <h3 className="font-bold text-slate-800 mb-4" dir="rtl">سبب من مليون سبب يخليني أحبك:</h3>
+              <p className="text-rose-700 text-lg leading-relaxed font-medium" dir="rtl">{currentLoveReason}</p>
+              <button 
+                onClick={() => setIsLoveJarOpen(false)}
+                className="mt-6 px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full text-sm font-bold transition-colors"
+              >
+                قفلي البرطمان
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Countdown to Halal */}
+      {!isDhikrMode && !isSleepGuardian && (
+        <motion.div 
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="bg-white/40 backdrop-blur-sm border border-white/50 px-6 py-2 rounded-full shadow-sm z-20 mt-2 mb-2 flex items-center gap-4"
+          dir="rtl"
+        >
+          <span className="text-xl">💍</span>
+          <div className="flex gap-4 text-center">
+            <div><div className="font-bold text-slate-800">{countdown.months}</div><div className="text-[10px] text-slate-500">شهر</div></div>
+            <div className="text-slate-300 font-light">|</div>
+            <div><div className="font-bold text-slate-800">{countdown.days}</div><div className="text-[10px] text-slate-500">يوم</div></div>
+            <div className="text-slate-300 font-light">|</div>
+            <div><div className="font-bold text-slate-800">{countdown.hours}</div><div className="text-[10px] text-slate-500">ساعة</div></div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Constellations (Hidden in Dhikr & Sleep Mode) */}
+      {!isDhikrMode && !isSleepGuardian && (
         <div className="w-full flex justify-center pt-2 z-10 shrink-0">
           {/* ... existing constellation code ... */}
         <div className="relative w-48 h-24">
@@ -352,23 +510,67 @@ export const ExperienceScreen = () => {
             exit={{ opacity: 0 }}
             className="w-full px-4 mb-4 z-20 flex flex-col gap-4"
           >
-            {/* Dhikr Button */}
-            <div className="flex justify-center w-full">
+            {/* Action Toolbar */}
+            <div className="flex justify-center gap-3 w-full flex-wrap">
                <button
                  onClick={() => setIsDhikrMode(true)}
-                 className="flex items-center gap-2 bg-white/70 backdrop-blur-md px-4 py-2 rounded-full shadow-sm text-indigo-800 text-sm font-bold border border-white/50"
-                 dir="rtl"
+                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors"
+                 title="جلسة تسبيح"
                >
-                 <span>📿</span>
-                 <span>جلسة تسبيح وهدوء</span>
+                 <span className="text-xl">📿</span>
+               </button>
+               <button
+                 onClick={openLoveJar}
+                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors"
+                 title="برطمان الحب"
+               >
+                 <span className="text-xl">🫙</span>
+               </button>
+               <button
+                 onClick={triggerSleepGuardian}
+                 className="flex flex-col items-center justify-center bg-slate-800/80 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-slate-700 hover:bg-slate-900 transition-colors"
+                 title="حارس النوم"
+               >
+                 <span className="text-xl">📖</span>
+               </button>
+               <button
+                 onClick={triggerPanic}
+                 className="flex flex-col items-center justify-center bg-rose-50/80 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-rose-200 hover:bg-rose-100 transition-colors relative overflow-hidden group"
+                 title="محتاجة دعوة"
+               >
+                 <div className="absolute inset-0 bg-rose-400 opacity-0 group-hover:opacity-10 transition-opacity" />
+                 <span className="text-xl animate-pulse">🤲</span>
                </button>
             </div>
 
             {/* Daily Message Card */}
-            <div className={`backdrop-blur-md rounded-2xl p-5 shadow-sm border border-white/50 text-center ${dailyMsg.type === 'friday_letter' ? 'bg-rose-50' : 'bg-white/80'}`} dir="rtl">
-              <h3 className="text-slate-800 font-bold mb-2">{dailyMsg.title}</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">{dailyMsg.content}</p>
-            </div>
+            <AnimatePresence mode="wait">
+              {isPanicMode ? (
+                <motion.div 
+                  key="panic"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className="bg-rose-100 backdrop-blur-md rounded-2xl p-5 shadow-lg border border-rose-300 text-center" 
+                  dir="rtl"
+                >
+                  <h3 className="text-rose-800 font-bold mb-2">رسالة طوارئ من حبيبك 💌</h3>
+                  <p className="text-rose-900 font-medium leading-relaxed">{panicDuaa}</p>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  key="daily"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className={`backdrop-blur-md rounded-2xl p-5 shadow-sm border border-white/50 text-center ${dailyMsg.type === 'friday_letter' ? 'bg-rose-50' : 'bg-white/80'}`} 
+                  dir="rtl"
+                >
+                  <h3 className="text-slate-800 font-bold mb-2">{dailyMsg.title}</h3>
+                  <p className="text-slate-600 text-sm leading-relaxed">{dailyMsg.content}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
