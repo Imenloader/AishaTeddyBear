@@ -107,12 +107,17 @@ export const ExperienceScreen = () => {
     if (isFinaleTriggered || gesture === 'None' || currentMessage !== null) return;
 
     const undiscovered = SECRETS.filter(s => !discoveredSecrets.includes(s.id));
-    if (undiscovered.length > 0) {
-      const secret = undiscovered[Math.floor(Math.random() * undiscovered.length)];
+    const isCompleted = undiscovered.length === 0;
+    const availableSecrets = isCompleted ? SECRETS : undiscovered;
+    
+    if (availableSecrets.length > 0) {
+      const secret = availableSecrets[Math.floor(Math.random() * availableSecrets.length)];
       
       if (navigator.vibrate) navigator.vibrate(100);
       
-      addDiscoveredSecret(secret.id);
+      if (!isCompleted) {
+        addDiscoveredSecret(secret.id);
+      }
       setBearState(secret.state);
       
       // Use the session's random set index to ensure we pull from a consistent 'set' of secrets
