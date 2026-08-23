@@ -118,15 +118,6 @@ export const WelcomeScreen = () => {
       exit={{ opacity: 0 }}
       className={`flex flex-col items-center justify-center h-full flex-1 p-6 relative overflow-hidden transition-all duration-1000 ${appMode === 'dream' ? 'font-serif' : 'font-sans'}`}
     >
-      {hasExistingMode && (
-        <button 
-          onClick={() => setScreen('experience')}
-          className="absolute top-6 left-4 px-3 py-1.5 bg-white/70 hover:bg-white backdrop-blur-sm text-slate-600 rounded-full text-xs font-bold shadow-sm border border-white/60 transition-all z-50 flex items-center gap-1"
-        >
-          رجوع <span>↩</span>
-        </button>
-      )}
-
       {/* Animated gradient background */}
       <div className={`absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] ${getBackgroundGradient()} -z-20 transition-colors duration-1000`} />
       
@@ -139,7 +130,7 @@ export const WelcomeScreen = () => {
       </div>
 
       {/* Cute Floating Pill Menu */}
-      <div className="absolute top-20 z-50 flex gap-1.5 bg-white/40 backdrop-blur-md p-1.5 rounded-full shadow-sm border border-white/60">
+      <div className="absolute top-6 z-50 flex gap-1.5 bg-white/40 backdrop-blur-md p-1.5 rounded-full shadow-sm border border-white/60">
         {modes.map(mode => (
           <button
             key={mode.id}
