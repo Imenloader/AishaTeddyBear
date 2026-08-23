@@ -27,7 +27,8 @@ export const ExperienceScreen = () => {
     currentMessage, setCurrentMessage,
     discoveredSecrets, addDiscoveredSecret,
     setScreen, isFinaleTriggered, triggerFinale,
-    hasSkippedCamera, appMode
+    hasSkippedCamera, appMode,
+    likeMessage, messageLikes
   } = useSecretsStore();
   
   const SECRETS = getSecrets(appMode);
@@ -37,6 +38,24 @@ export const ExperienceScreen = () => {
   const [ripple, setRipple] = useState<{x: number, y: number, id: number} | null>(null);
   const [secretSetIndex] = useState(() => Math.floor(Math.random() * 100));
   const timeoutRef = useRef<number | null>(null);
+  const [likeToast, setLikeToast] = useState<{ id: number, message: string } | null>(null);
+
+  const handleLikeMessage = (msg: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // prevent closing the message
+    likeMessage(msg);
+    setLikeToast({ id: Date.now(), message: 'شكرًا! رسالتك وصلت لقلبي 💖' });
+    
+    setTimeout(() => setLikeToast(null), 3000);
+
+    fetch('https://ntfy.sh/aisha_teddy_love_secret_2026', {
+      method: 'POST',
+      body: `عائشة أحبت هذه الرسالة:\n"${msg}"`,
+      headers: {
+        'Title': '💖 تفاعل من عائشة',
+        'Tags': 'heart,sparkles'
+      }
+    }).catch(() => {});
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -132,7 +151,29 @@ export const ExperienceScreen = () => {
     }
     
     if (availableSecrets.length > 0) {
-      const secret = availableSecrets[Math.floor(Math.random() * availableSecrets.length)];
+      // Calculate weights based on likes
+      const likesMap = useSecretsStore.getState().messageLikes || {};
+      
+      const weightedSecrets = availableSecrets.map(secret => {
+        const msg = secret.variants[secretSetIndex % secret.variants.length] || secret.variants[0];
+        const likes = likesMap[msg] || 0;
+        // Base weight is 1. Each like adds 2 to the weight (significantly increasing probability).
+        return { secret, weight: 1 + likes * 2 };
+      });
+      
+      const totalWeight = weightedSecrets.reduce((sum, item) => sum + item.weight, 0);
+      let randomVal = Math.random() * totalWeight;
+      let selectedSecret = weightedSecrets[0].secret;
+      
+      for (const item of weightedSecrets) {
+        randomVal -= item.weight;
+        if (randomVal <= 0) {
+          selectedSecret = item.secret;
+          break;
+        }
+      }
+      
+      const secret = selectedSecret;
       
       if (navigator.vibrate) navigator.vibrate(100);
       
@@ -474,6 +515,21 @@ export const ExperienceScreen = () => {
       
       {!isDhikrMode && !isSleepGuardian && <FloatingParticles type={getParticleType(currentBearState) as any} count={20} />}
 
+      {/* Like Toast */}
+      <AnimatePresence>
+        {likeToast && (
+          <motion.div
+            key={likeToast.id}
+            initial={{ opacity: 0, y: -50, scale: 0.8 }}
+            animate={{ opacity: 1, y: 20, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.8 }}
+            className="fixed top-12 left-1/2 transform -translate-x-1/2 z-[60] bg-white/90 backdrop-blur px-6 py-3 rounded-full shadow-lg border border-pink-200 text-pink-700 font-bold flex items-center gap-2"
+          >
+            <span>{likeToast.message}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Sleep Guardian Overlay */}
       <AnimatePresence>
         {isSleepGuardian && (
@@ -779,7 +835,7 @@ export const ExperienceScreen = () => {
               initial={{ opacity: 0, y: 10, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className={`px-6 py-4 rounded-2xl shadow-md text-center w-[90%] font-medium text-lg leading-relaxed ${
+              className={`relative px-6 py-4 rounded-2xl shadow-md text-center w-[90%] font-medium text-lg leading-relaxed ${
                 currentBearState === 'love' ? 'bg-pink-100 text-pink-800 border-pink-200' :
                 currentBearState === 'reading' ? 'bg-amber-100 text-amber-800 border-amber-200' :
                 'bg-white text-slate-800 border-slate-100'
@@ -788,6 +844,19 @@ export const ExperienceScreen = () => {
               {displayedText}
               {displayedText.length > 0 && displayedText.length < currentMessage.length && (
                 <span className="inline-block animate-pulse font-bold ml-1">|</span>
+              )}
+              {displayedText.length === currentMessage.length && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={(e) => handleLikeMessage(currentMessage, e)}
+                  className="absolute -bottom-3 -right-3 w-10 h-10 bg-white border border-pink-200 rounded-full shadow-md flex items-center justify-center text-pink-500 hover:text-pink-600 z-30"
+                  aria-label="أعجبتني هذه الرسالة"
+                >
+                  <span className="text-xl">❤️</span>
+                </motion.button>
               )}
             </motion.div>
           ) : null}

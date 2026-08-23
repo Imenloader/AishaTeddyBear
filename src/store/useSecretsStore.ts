@@ -34,6 +34,9 @@ interface SecretsState {
   setAppMode: (mode: 'soul' | 'heart' | 'sparkle' | 'dream') => void;
   
   reset: () => void;
+  
+  messageLikes: Record<string, number>;
+  likeMessage: (msg: string) => void;
 }
 
 export const useSecretsStore = create<SecretsState>()(
@@ -92,6 +95,14 @@ export const useSecretsStore = create<SecretsState>()(
         isFinaleTriggered: false,
         hasSkippedCamera: false
         // we intentionally do not reset appMode or discoveredSecrets here, so they persist
+      })),
+      
+      messageLikes: {},
+      likeMessage: (msg) => set((state) => ({
+        messageLikes: {
+          ...state.messageLikes,
+          [msg]: (state.messageLikes[msg] || 0) + 1
+        }
       }))
     }),
     {
@@ -106,7 +117,8 @@ export const useSecretsStore = create<SecretsState>()(
         seenFinales: state.seenFinales || [],
         completedModes: state.completedModes || [],
         hasSkippedCamera: state.hasSkippedCamera,
-        appMode: state.appMode
+        appMode: state.appMode,
+        messageLikes: state.messageLikes || {}
       }),
     }
   )
