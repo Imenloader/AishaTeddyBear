@@ -2921,5 +2921,8 @@ export const getFinalSecret = (mode: 'soul' | 'heart' | 'sparkle' | 'dream', isU
   }
 
   // If she unlocked more sets than we have finales, wrap around or return the last one
+  if (!finalesArray || finalesArray.length === 0) {
+    return FINAL_SECRET_ULTIMATE; // Ultimate fallback
+  }
   return finalesArray[Math.min(setIndex, finalesArray.length - 1)];
 };

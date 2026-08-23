@@ -16,7 +16,10 @@ export const FinaleScreen = () => {
   
   const completedModes = useSecretsStore.getState().completedModes || [];
   const isUltimate = completedModes.length >= 4;
-  const FINAL_SECRET = getFinalSecret(appMode, isUltimate, modeUnlockedCount);
+  const FINAL_SECRET = getFinalSecret(appMode, isUltimate, modeUnlockedCount) || {
+    state: ['love', 'sleep'],
+    message: 'بحبك يا عائشة 💖'
+  };
   
   const [phase, setPhase] = useState<1 | 2 | 3>(1);
   const [typedMessage, setTypedMessage] = useState('');
@@ -84,19 +87,20 @@ export const FinaleScreen = () => {
 
     const phase2Timer = setTimeout(() => {
       setPhase(2);
-      setBearState('love');
-    }, 3000);
-
+    }, 1000);
+    
     const phase3Timer = setTimeout(() => {
       setPhase(3);
-      setBearState('sleep');
-    }, 5000);
+      if (FINAL_SECRET && FINAL_SECRET.state && FINAL_SECRET.state.length > 0) {
+        setBearState(FINAL_SECRET.state[0]);
+      }
+    }, 2500);
 
     return () => {
       clearTimeout(phase2Timer);
       clearTimeout(phase3Timer);
     };
-  }, [setBearState]);
+  }, [setBearState, FINAL_SECRET]);
 
   useEffect(() => {
     if (phase === 3) {
