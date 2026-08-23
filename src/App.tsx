@@ -24,7 +24,7 @@ export default function App() {
     }
   }, [isFinaleTriggered, currentScreen, setScreen]);
 
-  const [isNavExpanded, setIsNavExpanded] = useState(true);
+  const [isNavExpanded, setIsNavExpanded] = useState(false);
   const showBottomNav = currentScreen === 'experience' || currentScreen === 'guide';
 
   const NavButton = ({ screen, icon, label }: { screen: ScreenState | 'welcome', icon: string, label: string }) => {
@@ -32,12 +32,15 @@ export default function App() {
     const isWelcome = screen === 'welcome';
     return (
       <button 
-        onClick={() => setScreen(screen as ScreenState)}
-        className={`flex flex-col items-center justify-center w-16 sm:w-20 transition-all ${isActive ? 'text-rose-600 scale-110' : 'text-slate-500 hover:text-rose-400'}`}
+        onClick={() => {
+          setScreen(screen as ScreenState);
+          setIsNavExpanded(false); // Close menu on select
+        }}
+        className={`flex items-center gap-3 px-4 py-3 w-full rounded-2xl transition-all ${isActive ? 'bg-rose-100 text-rose-700 font-extrabold' : 'hover:bg-rose-50 text-slate-600 font-bold'}`}
         title={label}
       >
-        <span className="text-2xl mb-1">{icon}</span>
-        <span className={`text-[10px] font-bold ${isActive ? 'opacity-100' : 'opacity-70'}`}>{label}</span>
+        <span className="text-2xl">{icon}</span>
+        <span className="text-sm">{label}</span>
       </button>
     );
   };
@@ -53,47 +56,36 @@ export default function App() {
           {currentScreen === 'finale' && <FinaleScreen key="finale" />}
         </AnimatePresence>
 
-        {/* Persistent Bottom Navigation */}
+        {/* Top Right Menu */}
         <AnimatePresence>
-          {showBottomNav && isNavExpanded && (
-            <motion.div 
-              initial={{ y: 100 }}
-              animate={{ y: 0 }}
-              exit={{ y: 100 }}
-              className="absolute bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl border-t border-white/50 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] flex flex-col items-center z-50 rounded-t-3xl md:rounded-b-[32px] md:rounded-t-none pb-4 pt-2"
-              dir="rtl"
-            >
-              <button 
-                onClick={() => setIsNavExpanded(false)}
-                className="w-12 h-1.5 bg-slate-200 rounded-full mb-3 hover:bg-slate-300 transition-colors cursor-pointer"
-                title="إخفاء القائمة"
-              />
-              <div className="flex items-center justify-around w-full px-4">
-                <NavButton screen="experience" icon="🧸" label="الرئيسية" />
-                <NavButton screen="guide" icon="📖" label="الدليل" />
-                <NavButton screen="welcome" icon="✨" label="المزاج" />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Floating Expand Button when collapsed */}
-        <AnimatePresence>
-          {showBottomNav && !isNavExpanded && (
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              className="absolute bottom-6 right-1/2 translate-x-1/2 z-50"
-            >
+          {showBottomNav && (
+            <div className="absolute top-4 right-4 z-50 flex flex-col items-end" dir="rtl">
+              {/* Menu Toggle Button */}
               <button
-                onClick={() => setIsNavExpanded(true)}
-                className="bg-white/90 backdrop-blur-md shadow-xl border border-white/50 w-14 h-14 rounded-full flex items-center justify-center text-2xl hover:scale-105 transition-transform"
-                title="إظهار القائمة"
+                onClick={() => setIsNavExpanded(!isNavExpanded)}
+                className="bg-white/70 backdrop-blur-md shadow-sm border border-white/50 w-12 h-12 rounded-2xl flex items-center justify-center text-xl text-rose-500 hover:bg-white hover:scale-105 transition-all"
+                title="القائمة"
               >
-                🎀
+                {isNavExpanded ? '✖' : '☰'}
               </button>
-            </motion.div>
+
+              {/* Dropdown Menu */}
+              <AnimatePresence>
+                {isNavExpanded && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: -10, transformOrigin: 'top right' }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                    transition={{ type: "spring", bounce: 0.4, duration: 0.5 }}
+                    className="mt-3 bg-white/80 backdrop-blur-xl border border-white/50 shadow-xl rounded-3xl p-3 flex flex-col gap-2"
+                  >
+                    <NavButton screen="experience" icon="🧸" label="الرئيسية" />
+                    <NavButton screen="guide" icon="📖" label="الدليل" />
+                    <NavButton screen="welcome" icon="✨" label="المزاج" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           )}
         </AnimatePresence>
       </div>
