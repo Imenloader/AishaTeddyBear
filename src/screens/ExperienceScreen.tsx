@@ -48,13 +48,23 @@ export const ExperienceScreen = () => {
   useEffect(() => {
     const modeUnlockedCount = SECRETS.filter(s => discoveredSecrets.includes(s.id)).length;
     
-    // Every 7 secrets triggers a finale
-    if (modeUnlockedCount > 0 && modeUnlockedCount % 7 === 0 && !isFinaleTriggered) {
-      const finaleId = `${appMode}_${modeUnlockedCount}`;
+    // Check if mode is completely finished (all 100 secrets)
+    const isModeComplete = modeUnlockedCount > 0 && modeUnlockedCount === SECRETS.length;
+    
+    // Check if it's a 7-secret milestone
+    const isMilestone = modeUnlockedCount > 0 && modeUnlockedCount % 7 === 0;
+
+    if ((isModeComplete || isMilestone) && !isFinaleTriggered) {
+      const finaleId = isModeComplete ? `${appMode}_complete` : `${appMode}_${modeUnlockedCount}`;
       const seenFinales = useSecretsStore.getState().seenFinales || [];
       
       if (!seenFinales.includes(finaleId)) {
         useSecretsStore.getState().addSeenFinale(finaleId);
+        
+        if (isModeComplete) {
+          useSecretsStore.getState().addCompletedMode(appMode);
+        }
+        
         triggerFinale();
       }
     }
@@ -92,8 +102,10 @@ export const ExperienceScreen = () => {
   const handleGesture = useCallback((gesture: GestureType) => {
     if (isFinaleTriggered || gesture === 'None') return;
 
-    const secret = SECRETS.find(s => !discoveredSecrets.includes(s.id));
-    if (secret) {
+    const undiscovered = SECRETS.filter(s => !discoveredSecrets.includes(s.id));
+    if (undiscovered.length > 0) {
+      const secret = undiscovered[Math.floor(Math.random() * undiscovered.length)];
+      
       if (navigator.vibrate) navigator.vibrate(100);
       
       addDiscoveredSecret(secret.id);
