@@ -188,6 +188,8 @@ export const ExperienceScreen = () => {
   const [isFridayLetterOpen, setIsFridayLetterOpen] = useState(false);
   const [fridayLetterContent, setFridayLetterContent] = useState("");
 
+  const [showThoughtSent, setShowThoughtSent] = useState(false);
+
   const [countdown, setCountdown] = useState({ months: 0, days: 0, hours: 0 });
 
   useEffect(() => {
@@ -232,6 +234,19 @@ export const ExperienceScreen = () => {
   const openFridayLetter = () => {
     setFridayLetterContent(FRIDAY_LETTERS[Math.floor(Math.random() * FRIDAY_LETTERS.length)]);
     setIsFridayLetterOpen(true);
+  };
+
+  const sendThought = () => {
+    // Make the bear blush and show confirmation
+    setBearState('shy');
+    setShowThoughtSent(true);
+    
+    // In the future, this can trigger a Discord Webhook or open WhatsApp!
+    
+    setTimeout(() => {
+      setShowThoughtSent(false);
+      setBearState('idle');
+    }, 4000);
   };
 
   const triggerPanic = () => {
@@ -591,8 +606,31 @@ export const ExperienceScreen = () => {
                  <span className="text-xl animate-pulse">🤲</span>
                </button>
             </div>
-               </button>
-            </div>
+
+            {/* Thought of you Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={sendThought}
+              disabled={showThoughtSent}
+              className={`w-full py-3 rounded-2xl shadow-sm font-bold flex items-center justify-center gap-2 transition-all ${
+                showThoughtSent 
+                  ? 'bg-white/80 text-rose-500 border border-rose-200'
+                  : 'bg-white/70 backdrop-blur-md text-slate-700 hover:bg-white border border-white/50'
+              }`}
+            >
+              {showThoughtSent ? (
+                <>
+                  <span>وصلتله وفرح بيها أوي!</span>
+                  <span className="text-xl">🥰</span>
+                </>
+              ) : (
+                <>
+                  <span>أنا فكرت فيك دلوقتي</span>
+                  <span className="text-xl">💭</span>
+                </>
+              )}
+            </motion.button>
 
             {/* Daily Message Card */}
             <AnimatePresence mode="wait">
