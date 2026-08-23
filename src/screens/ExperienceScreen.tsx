@@ -236,12 +236,24 @@ export const ExperienceScreen = () => {
     setIsFridayLetterOpen(true);
   };
 
-  const sendThought = () => {
+  const sendThought = async () => {
     // Make the bear blush and show confirmation
     setBearState('shy');
     setShowThoughtSent(true);
     
-    // In the future, this can trigger a Discord Webhook or open WhatsApp!
+    try {
+      // Send the silent push notification via ntfy.sh
+      await fetch('https://ntfy.sh/aisha_teddy_love_secret_2026', {
+        method: 'POST',
+        body: 'عائشة بتفكر فيك دلوقتي يا دبدوب! ❤️',
+        headers: {
+            'Title': 'رسالة من أميرة أحلامك 🎀',
+            'Tags': 'heart,sparkles'
+        }
+      });
+    } catch (e) {
+      console.error("Failed to send thought:", e);
+    }
     
     setTimeout(() => {
       setShowThoughtSent(false);
