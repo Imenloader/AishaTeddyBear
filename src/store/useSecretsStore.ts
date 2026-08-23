@@ -75,7 +75,8 @@ export const useSecretsStore = create<SecretsState>()(
         };
       }),
       resetModeProgress: (mode) => set((state) => ({
-        discoveredSecrets: (state.discoveredSecrets || []).filter(id => !id.startsWith(`${mode}_`))
+        discoveredSecrets: (state.discoveredSecrets || []).filter(id => !id.startsWith(`${mode}_`)),
+        seenFinales: (state.seenFinales || []).filter(id => !id.startsWith(`${mode}_`))
       })),
 
       hasSkippedCamera: false,

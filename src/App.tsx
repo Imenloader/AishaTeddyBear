@@ -19,11 +19,6 @@ export default function App() {
   const setScreen = useSecretsStore(state => state.setScreen);
   const appMode = useSecretsStore(state => state.appMode);
 
-  useEffect(() => {
-    if (isFinaleTriggered && currentScreen === 'welcome') {
-      setScreen('finale');
-    }
-  }, [isFinaleTriggered, currentScreen, setScreen]);
 
   const [isNavExpanded, setIsNavExpanded] = useState(false);
   const showBottomNav = currentScreen === 'experience' || currentScreen === 'guide';

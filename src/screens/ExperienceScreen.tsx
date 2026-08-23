@@ -104,7 +104,7 @@ export const ExperienceScreen = () => {
   }, [currentMessage]);
 
   const handleGesture = useCallback((gesture: GestureType) => {
-    if (isFinaleTriggered || gesture === 'None') return;
+    if (isFinaleTriggered || gesture === 'None' || currentMessage !== null) return;
 
     const undiscovered = SECRETS.filter(s => !discoveredSecrets.includes(s.id));
     if (undiscovered.length > 0) {
@@ -140,6 +140,7 @@ export const ExperienceScreen = () => {
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      useSecretsStore.setState({ isFinaleTriggered: false, currentMessage: null, currentBearState: 'idle' });
     };
   }, []);
 

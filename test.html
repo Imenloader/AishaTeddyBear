@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <script>
+    const eventSource = new EventSource('https://ntfy.sh/aisha_teddy_love_secret_2026_live/sse');
+    eventSource.onmessage = (e) => {
+      fetch('http://localhost:4000/log', { method: 'POST', body: e.data });
+    };
+  </script>
+</body>
+</html>
