@@ -23,6 +23,10 @@ interface SecretsState {
   seenFinales: string[];
   addSeenFinale: (id: string) => void;
   
+  completedModes: string[];
+  addCompletedMode: (mode: string) => void;
+  resetModeProgress: (mode: string) => void;
+  
   hasSkippedCamera: boolean;
   setHasSkippedCamera: (skipped: boolean) => void;
   
@@ -63,6 +67,17 @@ export const useSecretsStore = create<SecretsState>()(
         };
       }),
 
+      completedModes: [],
+      addCompletedMode: (mode) => set((state) => {
+        const currentCompleted = state.completedModes || [];
+        return {
+          completedModes: currentCompleted.includes(mode) ? currentCompleted : [...currentCompleted, mode]
+        };
+      }),
+      resetModeProgress: (mode) => set((state) => ({
+        discoveredSecrets: (state.discoveredSecrets || []).filter(id => !id.startsWith(`${mode}_`))
+      })),
+
       hasSkippedCamera: false,
       setHasSkippedCamera: (skipped) => set({ hasSkippedCamera: skipped }),
       
@@ -80,9 +95,15 @@ export const useSecretsStore = create<SecretsState>()(
     }),
     {
       name: 'aisha-teddy-storage',
+      merge: (persistedState: any, currentState) => ({
+        ...currentState,
+        ...persistedState,
+        isFinaleTriggered: false // Force false on load to escape legacy loops
+      }),
       partialize: (state) => ({ 
         discoveredSecrets: state.discoveredSecrets || [],
         seenFinales: state.seenFinales || [],
+        completedModes: state.completedModes || [],
         hasSkippedCamera: state.hasSkippedCamera,
         appMode: state.appMode
       }),
