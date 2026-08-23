@@ -49,9 +49,19 @@ export const ExperienceScreen = () => {
   const addSeenFinale = useSecretsStore(state => state.addSeenFinale);
   const addCompletedMode = useSecretsStore(state => state.addCompletedMode);
 
+  // PERFORMANCE OPTIMIZATION: Memoize O(n) filtering operation 
+  // This component re-renders every 40ms while typing (setDisplayedText).
+  // Previously, this filtering was happening 15 times per render (in useEffect + 14 times in STAR_POINTS loops)
+  // Now it happens once, and only when discoveredSecrets changes.
+  const modeUnlockedCount = React.useMemo(() => 
+    SECRETS.filter(s => discoveredSecrets.includes(s.id)).length, 
+  [SECRETS, discoveredSecrets]);
+
+  const visualCount = React.useMemo(() => 
+    modeUnlockedCount % 7 === 0 && modeUnlockedCount > 0 && isFinaleTriggered ? 7 : modeUnlockedCount % 7,
+  [modeUnlockedCount, isFinaleTriggered]);
+
   useEffect(() => {
-    const modeUnlockedCount = SECRETS.filter(s => discoveredSecrets.includes(s.id)).length;
-    
     // Check if mode is completely finished (all 100 secrets)
     const isModeComplete = modeUnlockedCount > 0 && modeUnlockedCount === SECRETS.length;
     
@@ -695,9 +705,7 @@ export const ExperienceScreen = () => {
                 if (i === 0) return null;
                 const prev = STAR_POINTS[i - 1];
                 
-                const modeUnlockedCount = SECRETS.filter(s => discoveredSecrets.includes(s.id)).length;
-                const visualCount = modeUnlockedCount % 7 === 0 && modeUnlockedCount > 0 && isFinaleTriggered ? 7 : modeUnlockedCount % 7;
-                
+                // PERFORMANCE OPTIMIZATION: modeUnlockedCount calculation was moved to useMemo
                 const bothDiscovered = i < visualCount && (i - 1) < visualCount;
                 return (
                   <line 
@@ -711,9 +719,6 @@ export const ExperienceScreen = () => {
               })}
             </svg>
             {STAR_POINTS.map((p, i) => {
-              const modeUnlockedCount = SECRETS.filter(s => discoveredSecrets.includes(s.id)).length;
-              const visualCount = modeUnlockedCount % 7 === 0 && modeUnlockedCount > 0 && isFinaleTriggered ? 7 : modeUnlockedCount % 7;
-              
               const isDiscovered = i < visualCount || (i === 6 && isFinaleTriggered && modeUnlockedCount % 7 === 0);
               return (
                 <motion.div

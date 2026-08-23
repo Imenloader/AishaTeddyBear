@@ -1,0 +1,3 @@
+﻿## 2026-08-23 - [O(n) Filtering inside Render Map]
+**Learning:** React state updates on timers (like typing effects) cause frequent re-renders (e.g. every 40ms). In this codebase, the ExperienceScreen had an O(n) array filter operation (SECRETS.filter) inside a .map function that was called 14 times per render. During a 100-character message typing effect, this resulted in 1,400+ unnecessary array filter operations.
+**Action:** Always memoize derived state that requires O(n) operations, especially if the component uses frequent interval-based state updates (like setDisplayedText). Extracted the modeUnlockedCount to a single useMemo at the top of the component.
