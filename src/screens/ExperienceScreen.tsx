@@ -270,7 +270,7 @@ export const ExperienceScreen = () => {
       exit={{ opacity: 0 }}
       className="flex flex-col items-center h-full p-4 relative overflow-hidden flex-1 w-full"
     >
-      <div className={`absolute top-0 left-0 w-full h-full -z-20 transition-colors duration-1000 bg-gradient-to-br ${isDhikrMode ? 'from-slate-900 via-indigo-900 to-slate-800' : isSleepGuardian ? 'from-black via-slate-950 to-black' : getGradient(currentBearState)}`} />
+      <div className={`absolute top-0 left-0 w-full h-full -z-20 transition-colors duration-1000 bg-gradient-to-br ${isSleepGuardian ? 'from-black via-slate-950 to-black' : getGradient(currentBearState)}`} />
       
       {!isDhikrMode && !isSleepGuardian && <FloatingParticles type={getParticleType(currentBearState) as any} count={20} />}
 
@@ -481,7 +481,7 @@ export const ExperienceScreen = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="w-full flex-1 flex flex-col items-center justify-center z-20"
+            className="w-full px-6 py-8 mb-4 bg-white/60 backdrop-blur-md border border-white/50 rounded-3xl shadow-sm flex flex-col items-center justify-center z-20"
           >
             <motion.h2
               key={dhikrStep}
@@ -489,15 +489,15 @@ export const ExperienceScreen = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.1 }}
               transition={{ duration: 1 }}
-              className="text-4xl font-extrabold text-white text-center mb-8 drop-shadow-lg"
+              className="text-5xl font-extrabold text-indigo-900 text-center mb-6"
               dir="rtl"
             >
               {dhikrWords[dhikrStep]}
             </motion.h2>
-            <p className="text-indigo-200 text-sm mt-8 opacity-80" dir="rtl">خدي نفس عميق مع الدبدوب...</p>
+            <p className="text-indigo-700/80 font-bold text-sm mt-2" dir="rtl">خدي نفس عميق مع الدبدوب...</p>
             <button
               onClick={() => setIsDhikrMode(false)}
-              className="mt-10 px-6 py-2 rounded-full bg-white/10 text-white border border-white/20 hover:bg-white/20 pointer-events-auto"
+              className="mt-8 px-8 py-2 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold border border-indigo-200 transition-colors pointer-events-auto"
             >
               رجوع
             </button>
