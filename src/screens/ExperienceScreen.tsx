@@ -34,6 +34,7 @@ export const ExperienceScreen = () => {
   const [showIntro, setShowIntro] = useState(true);
   const [displayedText, setDisplayedText] = useState('');
   const [ripple, setRipple] = useState<{x: number, y: number, id: number} | null>(null);
+  const [secretSetIndex] = useState(() => Math.floor(Math.random() * 100));
   const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -88,13 +89,10 @@ export const ExperienceScreen = () => {
       addDiscoveredSecret(secret.id);
       setBearState(secret.state);
       
-      let randomMsg;
-      if (secret.variants.length > 1) {
-        do {
-          randomMsg = secret.variants[Math.floor(Math.random() * secret.variants.length)];
-        } while (randomMsg === currentMessage);
-      } else {
-        randomMsg = secret.variants[0];
+      // Use the session's random set index to ensure we pull from a consistent 'set' of secrets
+      let randomMsg = secret.variants[0];
+      if (secret.variants.length > 0) {
+        randomMsg = secret.variants[secretSetIndex % secret.variants.length];
       }
       
       setCurrentMessage(randomMsg);
