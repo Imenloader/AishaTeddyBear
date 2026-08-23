@@ -56,11 +56,27 @@ export const WelcomeScreen = () => {
 
   const getThemeColors = () => {
     switch(appMode) {
-      case 'heart': return { btn: 'bg-rose-400 hover:bg-rose-500 shadow-rose-200', text: 'text-rose-800' };
-      case 'sparkle': return { btn: 'bg-teal-400 hover:bg-teal-500 shadow-teal-200', text: 'text-teal-800' };
-      case 'dream': return { btn: 'bg-violet-400 hover:bg-violet-500 shadow-violet-200', text: 'text-violet-800' };
+      case 'heart': return { 
+        btn: 'bg-rose-400 hover:bg-rose-500 shadow-rose-200', 
+        text: 'text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-500',
+        subtext: 'text-rose-700/80'
+      };
+      case 'sparkle': return { 
+        btn: 'bg-teal-400 hover:bg-teal-500 shadow-teal-200', 
+        text: 'text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500',
+        subtext: 'text-teal-800/80'
+      };
+      case 'dream': return { 
+        btn: 'bg-violet-400 hover:bg-violet-500 shadow-violet-200', 
+        text: 'text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600',
+        subtext: 'text-violet-800/80'
+      };
       case 'soul':
-      default: return { btn: 'bg-indigo-400 hover:bg-indigo-500 shadow-indigo-200', text: 'text-indigo-800' };
+      default: return { 
+        btn: 'bg-indigo-400 hover:bg-indigo-500 shadow-indigo-200', 
+        text: 'text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600',
+        subtext: 'text-indigo-800/80'
+      };
     }
   };
 
@@ -154,11 +170,11 @@ export const WelcomeScreen = () => {
       <div className="mt-8 text-center z-10 flex flex-col items-center">
         {/* Name Reveal */}
         <motion.h1 
-          className={`text-3xl font-extrabold mb-4 shimmer-gold h-10 transition-colors duration-700 ${theme.text}`}
+          className={`text-3xl font-extrabold mb-4 h-10 transition-colors duration-700 ${theme.text}`}
           dir="rtl"
         >
           {displayedGreeting}
-          {displayedGreeting.length < greeting.length && <span className="animate-pulse inline-block ml-1">|</span>}
+          {displayedGreeting.length < greeting.length && <span className="animate-pulse inline-block ml-1 text-slate-400">|</span>}
         </motion.h1>
         
         {/* Subtitle */}
@@ -169,7 +185,7 @@ export const WelcomeScreen = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.5 }}
-            className="text-slate-600 mb-10 max-w-xs mx-auto leading-relaxed text-lg h-16"
+            className={`mb-10 max-w-xs mx-auto leading-relaxed text-lg h-16 font-medium ${theme.subtext}`}
             dir="rtl"
           >
             {getSubtitle()}
