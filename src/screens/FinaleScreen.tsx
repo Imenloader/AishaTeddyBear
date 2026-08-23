@@ -123,7 +123,7 @@ export const FinaleScreen = () => {
     <motion.div 
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
-      className={`flex flex-col items-center justify-center h-full flex-1 w-full p-6 relative transition-colors duration-[3000ms] ${bgClass} overflow-hidden`}
+      className={`flex flex-col items-center h-full flex-1 w-full p-6 pb-24 relative transition-colors duration-[3000ms] ${bgClass} overflow-y-auto overflow-x-hidden`}
     >
       <AnimatePresence>
         {(phase === 2 || phase === 3) && (
@@ -148,14 +148,14 @@ export const FinaleScreen = () => {
                 }}
               />
             ))}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-transparent to-black/30" />
+            <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-transparent to-black/30" />
           </motion.div>
         )}
       </AnimatePresence>
 
       <AnimatePresence>
         {phase === 1 && (
-          <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
+          <div className="fixed inset-0 z-10 pointer-events-none overflow-hidden">
             {hearts.map((heart) => (
               <motion.div
                 key={heart.id}
@@ -178,11 +178,11 @@ export const FinaleScreen = () => {
         )}
       </AnimatePresence>
 
-      <div className="z-20 mt-8">
+      <div className="z-20 mt-8 shrink-0">
         <TeddyBear state={currentBearState} />
       </div>
       
-      <div className="h-[45vh] mt-8 flex flex-col items-center w-full z-20 max-w-sm relative">
+      <div className="flex-1 mt-8 flex flex-col items-center w-full z-20 max-w-sm relative pb-8">
         <AnimatePresence mode="wait">
           {phase === 3 && (
             <motion.div
