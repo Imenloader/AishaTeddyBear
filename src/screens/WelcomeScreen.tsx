@@ -9,13 +9,27 @@ export const WelcomeScreen = () => {
   const { setScreen, reset, appMode, setAppMode } = useSecretsStore();
   const [displayedGreeting, setDisplayedGreeting] = useState('');
 
-  const greeting = "أهلاً يا عائشة 🌷";
-  const words = greeting.split(' ');
+  const getGreeting = () => {
+    switch (appMode) {
+      case 'heart': return 'يا نبض قلبي يا عائشة 💖';
+      case 'sparkle': return 'يا أشطر وأجمل عائشة ✨';
+      case 'dream': return 'يا حلمي الجميل يا عائشة ☁️';
+      case 'soul':
+      default: return 'أهلاً يا عائشة 🌷';
+    }
+  };
+
+  const greeting = getGreeting();
 
   useEffect(() => {
     reset();
-    
+  }, [reset]);
+
+  useEffect(() => {
+    const words = greeting.split(' ');
     let i = 0;
+    setDisplayedGreeting('');
+    
     const interval = setInterval(() => {
       setDisplayedGreeting(words.slice(0, i + 1).join(' '));
       i++;
@@ -25,7 +39,7 @@ export const WelcomeScreen = () => {
     }, 400); // 400ms per word
 
     return () => clearInterval(interval);
-  }, [reset]);
+  }, [greeting]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -68,6 +82,16 @@ export const WelcomeScreen = () => {
     { id: 'sparkle', icon: '✨', label: 'بريقي' },
     { id: 'dream', icon: '☁️', label: 'حلمي' }
   ];
+
+  const getSubtitle = () => {
+    switch (appMode) {
+      case 'heart': return 'أنا هنا عشان أطبطب عليكي وأكون دايماً جنبك وقت ما تحتاجيني..';
+      case 'sparkle': return 'جاهزة تكسري الدنيا النهاردة؟ يلا بينا نكتب قصة نجاح جديدة..';
+      case 'dream': return 'خدي نفس عميق، وخلينا نسافر سوا لعالم مفيش فيه غير السحر والهدوء..';
+      case 'soul':
+      default: return 'عندي لك مفاجأة صغيرة، حاجة معمولة مخصوص علشانك..';
+    }
+  };
 
   return (
     <motion.div 
@@ -138,15 +162,19 @@ export const WelcomeScreen = () => {
         </motion.h1>
         
         {/* Subtitle */}
-        <motion.p 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, duration: 0.8 }}
-          className="text-slate-600 mb-10 max-w-xs mx-auto leading-relaxed text-lg"
-          dir="rtl"
-        >
-          عندي لك مفاجأة صغيرة، حاجة معمولة مخصوص علشانك..
-        </motion.p>
+        <AnimatePresence mode="wait">
+          <motion.p 
+            key={appMode}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.5 }}
+            className="text-slate-600 mb-10 max-w-xs mx-auto leading-relaxed text-lg h-16"
+            dir="rtl"
+          >
+            {getSubtitle()}
+          </motion.p>
+        </AnimatePresence>
         
         {/* CTA Button */}
         <motion.button 
