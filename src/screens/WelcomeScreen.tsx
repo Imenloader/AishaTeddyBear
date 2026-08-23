@@ -40,20 +40,14 @@ export const WelcomeScreen = () => {
     visible: { opacity: 1, y: 0 }
   };
 
-  const getModeLabel = (m: string) => {
-    switch(m) {
-      case 'heart': return 'عائشة قلبي 💖';
-      case 'sparkle': return 'عائشة بريقي ✨';
-      case 'dream': return 'عائشة حلمي ☁️';
+  const getThemeColors = () => {
+    switch(appMode) {
+      case 'heart': return { btn: 'bg-rose-400 hover:bg-rose-500 shadow-rose-200', text: 'text-rose-800' };
+      case 'sparkle': return { btn: 'bg-teal-400 hover:bg-teal-500 shadow-teal-200', text: 'text-teal-800' };
+      case 'dream': return { btn: 'bg-violet-400 hover:bg-violet-500 shadow-violet-200', text: 'text-violet-800' };
       case 'soul':
-      default: return 'عائشة روحي 🌙';
+      default: return { btn: 'bg-indigo-400 hover:bg-indigo-500 shadow-indigo-200', text: 'text-indigo-800' };
     }
-  };
-
-  const cycleMode = () => {
-    const modes = ['soul', 'heart', 'sparkle', 'dream'] as const;
-    const currentIndex = modes.indexOf(appMode);
-    setAppMode(modes[(currentIndex + 1) % modes.length]);
   };
 
   const getBackgroundGradient = () => {
@@ -66,30 +60,61 @@ export const WelcomeScreen = () => {
     }
   };
 
+  const theme = getThemeColors();
+
+  const modes = [
+    { id: 'soul', icon: '🌙', label: 'روحي' },
+    { id: 'heart', icon: '💖', label: 'قلبي' },
+    { id: 'sparkle', icon: '✨', label: 'بريقي' },
+    { id: 'dream', icon: '☁️', label: 'حلمي' }
+  ];
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }} 
       exit={{ opacity: 0 }}
-      className="flex flex-col items-center justify-center h-full flex-1 p-6 relative overflow-hidden transition-colors duration-1000"
+      className={`flex flex-col items-center justify-center h-full flex-1 p-6 relative overflow-hidden transition-all duration-1000 ${appMode === 'dream' ? 'font-serif' : 'font-sans'}`}
     >
       {/* Animated gradient background */}
-      <div className={`absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] ${getBackgroundGradient()} -z-20 transition-all duration-1000`} />
+      <div className={`absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] ${getBackgroundGradient()} -z-20 transition-colors duration-1000`} />
       
       {/* Ambient background layer */}
       <div className="absolute inset-0 -z-10">
-        <FloatingParticles type="mixed" count={25} />
+        <FloatingParticles 
+          type={appMode === 'heart' ? 'hearts' : appMode === 'sparkle' ? 'sparkles' : 'mixed'} 
+          count={25} 
+        />
       </div>
 
-      {/* Mode Toggle Button */}
-      <div className="absolute top-4 left-4 z-50">
-        <button
-          onClick={cycleMode}
-          className="bg-white/60 backdrop-blur-md border border-white/50 shadow-sm text-slate-700 px-5 py-2 rounded-full text-sm font-semibold transition-all hover:bg-white/80 active:scale-95 flex items-center gap-2"
-          dir="rtl"
-        >
-          {getModeLabel(appMode)}
-        </button>
+      {/* Cute Floating Pill Menu */}
+      <div className="absolute top-6 z-50 flex gap-1.5 bg-white/40 backdrop-blur-md p-1.5 rounded-full shadow-sm border border-white/60">
+        {modes.map(mode => (
+          <button
+            key={mode.id}
+            onClick={() => setAppMode(mode.id as any)}
+            className={`px-3 py-2 rounded-full text-sm font-bold transition-all duration-500 flex items-center gap-1.5 ${
+              appMode === mode.id 
+                ? 'bg-white shadow-md scale-105 text-slate-800' 
+                : 'text-slate-500 hover:bg-white/50 hover:text-slate-700'
+            }`}
+            dir="rtl"
+          >
+            <span className="text-lg">{mode.icon}</span>
+            <AnimatePresence>
+              {appMode === mode.id && (
+                <motion.span 
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: 'auto', opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  className="whitespace-nowrap overflow-hidden"
+                >
+                  عائشة {mode.label}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        ))}
       </div>
       
       {/* Bear Entrance */}
@@ -97,14 +122,15 @@ export const WelcomeScreen = () => {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', bounce: 0.5, delay: 0.3 }}
+        className="mt-12"
       >
-        <TeddyBear state="idle" />
+        <TeddyBear state={appMode === 'heart' ? 'love' : appMode === 'dream' ? 'sleep' : 'idle'} />
       </motion.div>
       
       <div className="mt-8 text-center z-10 flex flex-col items-center">
         {/* Name Reveal */}
         <motion.h1 
-          className="text-3xl font-extrabold mb-4 shimmer-gold text-slate-800 h-10"
+          className={`text-3xl font-extrabold mb-4 shimmer-gold h-10 transition-colors duration-700 ${theme.text}`}
           dir="rtl"
         >
           {displayedGreeting}
@@ -125,18 +151,10 @@ export const WelcomeScreen = () => {
         {/* CTA Button */}
         <motion.button 
           initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ 
-            opacity: 1, 
-            scale: 1,
-            boxShadow: ["0px 0px 0px rgba(244, 63, 94, 0)", "0px 0px 20px rgba(244, 63, 94, 0.5)", "0px 0px 0px rgba(244, 63, 94, 0)"]
-          }}
-          transition={{ 
-            opacity: { delay: 2.2 },
-            scale: { delay: 2.2, type: 'spring', bounce: 0.4 },
-            boxShadow: { delay: 2.5, duration: 2, repeat: Infinity }
-          }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ opacity: { delay: 2.2 }, scale: { delay: 2.2, type: 'spring', bounce: 0.4 } }}
           onClick={() => setScreen('permission')}
-          className="flex items-center gap-3 bg-rose-500 hover:bg-rose-600 text-white px-10 py-4 rounded-full font-bold transition-colors text-lg cursor-pointer"
+          className={`flex items-center gap-3 text-white px-10 py-4 rounded-full font-bold transition-all duration-500 text-lg cursor-pointer shadow-lg hover:shadow-xl hover:-translate-y-1 ${theme.btn}`}
           dir="rtl"
         >
           <Play size={20} fill="currentColor" />
