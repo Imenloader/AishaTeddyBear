@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useSecretsStore } from '../store/useSecretsStore';
 import { TeddyBear } from '../components/TeddyBear';
 import { FloatingParticles } from '../components/FloatingParticles';
