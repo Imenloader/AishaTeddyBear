@@ -104,20 +104,29 @@ export const ExperienceScreen = () => {
   }, [currentMessage]);
 
   const handleGesture = useCallback((gesture: GestureType) => {
-    if (isFinaleTriggered || gesture === 'None' || currentMessage !== null) return;
+    if (isFinaleTriggered || gesture === 'None') return;
+
+    if (currentMessage !== null) {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      setBearState('idle');
+      setCurrentMessage(null);
+      return;
+    }
 
     const undiscovered = SECRETS.filter(s => !discoveredSecrets.includes(s.id));
-    const isCompleted = undiscovered.length === 0;
-    const availableSecrets = isCompleted ? SECRETS : undiscovered;
+    let availableSecrets = undiscovered;
+    
+    if (undiscovered.length === 0) {
+      useSecretsStore.getState().resetModeProgress(appMode);
+      availableSecrets = SECRETS;
+    }
     
     if (availableSecrets.length > 0) {
       const secret = availableSecrets[Math.floor(Math.random() * availableSecrets.length)];
       
       if (navigator.vibrate) navigator.vibrate(100);
       
-      if (!isCompleted) {
-        addDiscoveredSecret(secret.id);
-      }
+      addDiscoveredSecret(secret.id);
       setBearState(secret.state);
       
       // Use the session's random set index to ensure we pull from a consistent 'set' of secrets
@@ -132,7 +141,7 @@ export const ExperienceScreen = () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       
       const typingTime = randomMsg.length * 40; // 40ms per letter typing
-      const readingTime = Math.max(3000, randomMsg.length * 100); // 100ms per letter reading, min 3s
+      const readingTime = Math.max(2000, randomMsg.length * 60); // Faster reading time
       const duration = typingTime + readingTime;
       
       timeoutRef.current = setTimeout(() => {
