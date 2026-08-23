@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { BearState } from '../types';
 
-export type ScreenState = 'welcome' | 'permission' | 'experience' | 'finale';
+export type ScreenState = 'welcome' | 'permission' | 'experience' | 'finale' | 'guide';
 
 interface SecretsState {
   currentScreen: ScreenState;

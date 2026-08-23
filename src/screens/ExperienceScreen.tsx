@@ -268,7 +268,7 @@ export const ExperienceScreen = () => {
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
       exit={{ opacity: 0 }}
-      className="flex flex-col items-center h-full p-2 sm:p-4 relative overflow-y-auto overflow-x-hidden flex-1 w-full"
+      className="flex flex-col items-center h-full p-2 sm:p-4 pb-24 sm:pb-24 relative overflow-y-auto overflow-x-hidden flex-1 w-full"
     >
       <div className={`fixed inset-0 -z-20 transition-colors duration-1000 bg-gradient-to-br ${isSleepGuardian ? 'from-black via-slate-950 to-black' : getGradient(currentBearState)}`} />
       
@@ -334,7 +334,7 @@ export const ExperienceScreen = () => {
                 onClick={() => setIsLoveJarOpen(false)}
                 className="mt-6 px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full text-sm font-bold transition-colors"
               >
-                قفلي البرطمان
+                اقفلي البرطمان
               </button>
             </motion.div>
           </motion.div>
