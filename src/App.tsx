@@ -5,6 +5,7 @@
 
 import { AnimatePresence, motion } from 'motion/react';
 import { useSecretsStore, ScreenState } from './store/useSecretsStore';
+import { IntroScreen } from './screens/IntroScreen';
 import { WelcomeScreen } from './screens/WelcomeScreen';
 import { PermissionScreen } from './screens/PermissionScreen';
 import { ExperienceScreen } from './screens/ExperienceScreen';
@@ -49,6 +50,7 @@ export default function App() {
     <div className="w-full min-h-[100dvh] bg-rose-100 font-tajawal selection:bg-rose-200 flex items-center justify-center md:py-8">
       <div className="w-full h-[100dvh] md:h-full md:max-w-[400px] md:max-h-[850px] md:rounded-[40px] md:shadow-2xl md:border-[8px] md:border-white relative overflow-hidden bg-rose-50 flex flex-col">
         <AnimatePresence mode="wait">
+          {currentScreen === 'intro' && <IntroScreen key="intro" />}
           {currentScreen === 'welcome' && <WelcomeScreen key="welcome" />}
           {currentScreen === 'permission' && <PermissionScreen key="permission" />}
           {currentScreen === 'experience' && <ExperienceScreen key="experience" />}
