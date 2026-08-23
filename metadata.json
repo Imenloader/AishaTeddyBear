@@ -1,0 +1,10 @@
+{
+  "name": "دبدوب عائشة",
+  "description": "تجربة ويب تفاعلية وهدية رقمية لعائشة مع دبدوب كرتوني يتفاعل بحركات اليد عبر الكاميرا",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
