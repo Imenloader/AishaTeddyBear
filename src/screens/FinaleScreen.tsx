@@ -14,7 +14,8 @@ export const FinaleScreen = () => {
   const SECRETS = getSecrets(appMode);
   const modeUnlockedCount = SECRETS.filter((s: any) => discoveredSecrets.includes(s.id)).length;
   
-  const isUltimate = discoveredSecrets.length >= 400;
+  const completedModes = useSecretsStore.getState().completedModes || [];
+  const isUltimate = completedModes.length >= 4;
   const FINAL_SECRET = getFinalSecret(appMode, isUltimate, modeUnlockedCount);
   
   const [phase, setPhase] = useState<1 | 2 | 3>(1);
@@ -123,6 +124,16 @@ export const FinaleScreen = () => {
     bgClass = 'bg-indigo-950';
   }
 
+  const handleClose = () => {
+    const isModeComplete = modeUnlockedCount === SECRETS.length;
+    if (isUltimate) {
+      useSecretsStore.setState({ discoveredSecrets: [], completedModes: [], seenFinales: [] });
+    } else if (isModeComplete) {
+      useSecretsStore.getState().resetModeProgress(appMode);
+    }
+    reset();
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }} 
@@ -130,7 +141,7 @@ export const FinaleScreen = () => {
       className={`flex flex-col items-center h-full flex-1 w-full p-6 pb-24 relative transition-colors duration-[3000ms] ${bgClass} overflow-y-auto overflow-x-hidden`}
     >
       <button 
-        onClick={reset}
+        onClick={handleClose}
         className="absolute top-6 left-6 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-bold border border-white/20 transition-all z-50 flex items-center gap-2"
       >
         رجوع <span>↩</span>
@@ -221,7 +232,7 @@ export const FinaleScreen = () => {
                   <p className="text-indigo-300/60 italic font-medium">من قلبي ليكي 💝</p>
                   
                   <button 
-                    onClick={reset}
+                    onClick={handleClose}
                     className="flex items-center gap-2 text-indigo-300/60 hover:text-indigo-200 text-sm transition-colors"
                   >
                     <RotateCcw size={16} />

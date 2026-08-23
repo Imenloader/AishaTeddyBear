@@ -102,7 +102,7 @@ export const GuideScreen = () => {
             <button
               onClick={() => {
                 if (window.confirm('متأكدة إنك عايزة تمسحي كل الأسرار اللي فتحتيها وتبدأي من جديد؟')) {
-                  useSecretsStore.setState({ discoveredSecrets: [] });
+                  useSecretsStore.setState({ discoveredSecrets: [], seenFinales: [], completedModes: [] });
                   alert('تم مسح الذكريات بنجاح! تقدري تفتحي البرطمان من جديد 🧸✨');
                 }
               }}
