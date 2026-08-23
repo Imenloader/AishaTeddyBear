@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSecretsStore } from '../store/useSecretsStore';
 import { getSecrets } from '../data/secrets';
-import { getDailyMessage } from '../data/dailyContent';
+import { getDailyMessage, FRIDAY_LETTERS } from '../data/dailyContent';
 import { LOVE_REASONS, EMERGENCY_DUAAS } from '../data/loveJar';
 import { CameraFeed } from '../components/CameraFeed';
 import { TeddyBear } from '../components/TeddyBear';
@@ -185,6 +185,9 @@ export const ExperienceScreen = () => {
   const [isPanicMode, setIsPanicMode] = useState(false);
   const [panicDuaa, setPanicDuaa] = useState("");
 
+  const [isFridayLetterOpen, setIsFridayLetterOpen] = useState(false);
+  const [fridayLetterContent, setFridayLetterContent] = useState("");
+
   const [countdown, setCountdown] = useState({ months: 0, days: 0, hours: 0 });
 
   useEffect(() => {
@@ -224,6 +227,11 @@ export const ExperienceScreen = () => {
   const openLoveJar = () => {
     setCurrentLoveReason(LOVE_REASONS[Math.floor(Math.random() * LOVE_REASONS.length)]);
     setIsLoveJarOpen(true);
+  };
+
+  const openFridayLetter = () => {
+    setFridayLetterContent(FRIDAY_LETTERS[Math.floor(Math.random() * FRIDAY_LETTERS.length)]);
+    setIsFridayLetterOpen(true);
   };
 
   const triggerPanic = () => {
@@ -341,6 +349,40 @@ export const ExperienceScreen = () => {
         )}
       </AnimatePresence>
 
+      {/* Friday Letter Modal */}
+      <AnimatePresence>
+        {isFridayLetterOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
+            onClick={() => setIsFridayLetterOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 20 }}
+              className="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl max-w-sm w-full mx-4 text-center relative overflow-hidden"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-violet-400 to-indigo-500" />
+              <div className="text-4xl mb-4">💌</div>
+              <h3 className="text-lg font-bold text-slate-800 mb-4" dir="rtl">رسالة الجمعة</h3>
+              <p className="text-slate-600 leading-relaxed font-medium" dir="rtl">
+                {fridayLetterContent}
+              </p>
+              <button 
+                onClick={() => setIsFridayLetterOpen(false)}
+                className="mt-6 px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full text-sm font-bold transition-colors"
+              >
+                اقفلي الجواب
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Countdown to Halal */}
       {!isDhikrMode && !isSleepGuardian && (
         <motion.div 
@@ -394,7 +436,7 @@ export const ExperienceScreen = () => {
                 className="absolute transform -translate-x-1/2 -translate-y-1/2 text-[1rem]"
                 style={{ left: `${p.x}%`, top: `${p.y}%` }}
               >
-                ⭐
+                💖
               </motion.div>
             );
           })}
@@ -534,12 +576,21 @@ export const ExperienceScreen = () => {
                  <span className="text-xl">📖</span>
                </button>
                <button
+                 onClick={openFridayLetter}
+                 className="flex flex-col items-center justify-center bg-white/70 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-white/50 hover:bg-white transition-colors"
+                 title="رسالة الجمعة"
+               >
+                 <span className="text-xl">💌</span>
+               </button>
+               <button
                  onClick={triggerPanic}
                  className="flex flex-col items-center justify-center bg-rose-50/80 backdrop-blur-md w-14 h-14 rounded-2xl shadow-sm border border-rose-200 hover:bg-rose-100 transition-colors relative overflow-hidden group"
                  title="محتاجة دعوة"
                >
                  <div className="absolute inset-0 bg-rose-400 opacity-0 group-hover:opacity-10 transition-opacity" />
                  <span className="text-xl animate-pulse">🤲</span>
+               </button>
+            </div>
                </button>
             </div>
 
