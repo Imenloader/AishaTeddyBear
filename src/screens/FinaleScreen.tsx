@@ -192,7 +192,7 @@ export const FinaleScreen = () => {
               transition={{ duration: 1.5 }}
               className="text-center w-full flex flex-col items-center"
             >
-              <h2 className="text-4xl font-extrabold mb-6 shimmer-gold text-indigo-100">عائشة</h2>
+              <h2 className="text-4xl font-extrabold mb-4 shimmer-gold text-indigo-100 py-2 leading-relaxed">عائشة</h2>
               <div className="text-indigo-200 leading-loose mx-auto bg-indigo-900/40 p-6 rounded-3xl backdrop-blur-md border border-indigo-700/50 shadow-2xl mb-8 min-h-[160px] w-full text-right glass-dark" dir="rtl">
                 <p>
                   {typedMessage}
