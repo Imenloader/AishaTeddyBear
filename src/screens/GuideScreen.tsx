@@ -1,4 +1,4 @@
-﻿import { motion } from 'motion/react';
+import { motion } from 'motion/react';
 import { useSecretsStore } from '../store/useSecretsStore';
 
 export const GuideScreen = () => {
@@ -19,7 +19,7 @@ export const GuideScreen = () => {
       initial={{ opacity: 0, x: 20 }} 
       animate={{ opacity: 1, x: 0 }} 
       exit={{ opacity: 0, x: -20 }}
-      className={lex flex-col h-full w-full overflow-y-auto pb-24 }
+      className={`flex flex-col h-full w-full overflow-y-auto pb-24 ${getThemeColors()}`}
     >
       <div className="p-6">
         <h1 className="text-3xl font-extrabold mb-8 text-center mt-4 drop-shadow-sm" dir="rtl">
