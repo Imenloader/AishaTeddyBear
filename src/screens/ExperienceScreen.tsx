@@ -201,11 +201,15 @@ export const ExperienceScreen = () => {
     let ws: WebSocket;
 
     const connectWebSocket = () => {
-      ws = new WebSocket('wss://ntfy.sh/aisha_teddy_love_secret_2026_live/ws');
+      ws = new WebSocket('wss://ntfy.sh/aisha_teddy_love_secret_2026/ws');
       ws.onmessage = (e) => {
         try {
           const data = JSON.parse(e.data);
-          if (data.event === 'message' && (data.message || data.title)) {
+          
+          // Ignore messages sent BY the app itself (they have specific tags)
+          const hasAppTags = data.tags && (data.tags.includes('heart') || data.tags.includes('pray') || data.tags.includes('envelope'));
+          
+          if (data.event === 'message' && !hasAppTags && (data.message || data.title)) {
             lastMsgId = data.id;
             setLiveMessage({
               title: data.title,
@@ -219,34 +223,36 @@ export const ExperienceScreen = () => {
 
     connectWebSocket();
 
-    // Fallback: If user switches apps (e.g. to ntfy app to send a message) and switches back,
-    // the WebSocket might have slept. We fetch the latest message immediately on wake.
     const handleVisibilityChange = async () => {
       if (document.visibilityState === 'visible') {
-        // Reconnect WebSocket just in case it died
         if (ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
           connectWebSocket();
         }
 
         try {
-          const res = await fetch('https://ntfy.sh/aisha_teddy_love_secret_2026_live/json?poll=1');
+          const res = await fetch('https://ntfy.sh/aisha_teddy_love_secret_2026/json?poll=1');
           const text = await res.text();
           const lines = text.trim().split('\n').filter(Boolean);
           
           if (lines.length > 0) {
-            const lastLine = lines[lines.length - 1];
-            const data = JSON.parse(lastLine);
-            
-            // Show if it's a new message sent in the last 60 seconds
-            if (data.event === 'message' && (data.message || data.title) && data.id !== lastMsgId) {
-              const now = Date.now() / 1000;
-              if (now - data.time < 60) {
-                lastMsgId = data.id;
-                setLiveMessage({
-                  title: data.title,
-                  message: data.message || '...'
-                });
-                setBearState('love');
+            // Find the most recent message that is NOT from the app
+            for (let i = lines.length - 1; i >= 0; i--) {
+              const data = JSON.parse(lines[i]);
+              const hasAppTags = data.tags && (data.tags.includes('heart') || data.tags.includes('pray') || data.tags.includes('envelope'));
+              
+              if (data.event === 'message' && !hasAppTags && (data.message || data.title)) {
+                if (data.id !== lastMsgId) {
+                  const now = Date.now() / 1000;
+                  if (now - data.time < 60) {
+                    lastMsgId = data.id;
+                    setLiveMessage({
+                      title: data.title,
+                      message: data.message || '...'
+                    });
+                    setBearState('love');
+                  }
+                }
+                break; // Stop after finding the most recent user message
               }
             }
           }
