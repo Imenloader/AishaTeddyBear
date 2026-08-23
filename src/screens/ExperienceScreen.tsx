@@ -237,10 +237,10 @@ export const ExperienceScreen = () => {
   };
 
   const SLEEP_SURAHS = [
-    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\nاللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ...",
-    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\nقُلْ هُوَ اللَّهُ أَحَدٌ ﴿1﴾ اللَّهُ الصَّمَدُ ﴿2﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿3﴾ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴿4﴾",
-    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\nقُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿1﴾ مِن شَرِّ مَا خَلَقَ...",
-    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\nقُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿1﴾ مَلِكِ النَّاسِ...",
+    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n\nاللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n\nقُلْ هُوَ اللَّهُ أَحَدٌ ﴿1﴾ اللَّهُ الصَّمَدُ ﴿2﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿3﴾ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴿4﴾",
+    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n\nقُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿1﴾ مِن شَرِّ مَا خَلَقَ ﴿2﴾ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿3﴾ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿4﴾ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿5﴾",
+    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n\nقُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿1﴾ مَلِكِ النَّاسِ ﴿2﴾ إِلَٰهِ النَّاسِ ﴿3﴾ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿4﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿5﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿6﴾",
     "قرأتهم؟ يلا نامي بقى، الملائكة هتحرسك وأنا هستودعك ربنا. تصبحي على خير يا روحي 💖"
   ];
 
@@ -268,9 +268,9 @@ export const ExperienceScreen = () => {
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
       exit={{ opacity: 0 }}
-      className="flex flex-col items-center h-full p-4 relative overflow-hidden flex-1 w-full"
+      className="flex flex-col items-center h-full p-2 sm:p-4 relative overflow-y-auto overflow-x-hidden flex-1 w-full"
     >
-      <div className={`absolute top-0 left-0 w-full h-full -z-20 transition-colors duration-1000 bg-gradient-to-br ${isSleepGuardian ? 'from-black via-slate-950 to-black' : getGradient(currentBearState)}`} />
+      <div className={`fixed inset-0 -z-20 transition-colors duration-1000 bg-gradient-to-br ${isSleepGuardian ? 'from-black via-slate-950 to-black' : getGradient(currentBearState)}`} />
       
       {!isDhikrMode && !isSleepGuardian && <FloatingParticles type={getParticleType(currentBearState) as any} count={20} />}
 
@@ -281,14 +281,14 @@ export const ExperienceScreen = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 flex flex-col items-center justify-center p-8 bg-black/90 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 sm:p-8 bg-black/95 backdrop-blur-md overflow-y-auto"
             onClick={nextSleepStep}
           >
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               key={sleepGuardianStep}
-              className="text-white text-center font-serif text-xl leading-loose"
+              className="text-white text-center font-serif text-base sm:text-lg md:text-xl leading-loose max-w-lg mx-auto my-auto"
               dir="rtl"
             >
               <pre className="whitespace-pre-wrap font-serif leading-loose text-center text-indigo-100">
@@ -323,7 +323,7 @@ export const ExperienceScreen = () => {
               initial={{ scale: 0.8, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.8, y: 20 }}
-              className="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center relative overflow-hidden"
+              className="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl max-w-sm w-full mx-4 text-center relative overflow-hidden"
               onClick={e => e.stopPropagation()}
             >
               <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-rose-400 to-pink-500" />
@@ -350,7 +350,7 @@ export const ExperienceScreen = () => {
           dir="rtl"
         >
           <span className="text-xl">💍</span>
-          <div className="flex gap-4 text-center">
+          <div className="flex gap-2 sm:gap-4 text-center">
             <div><div className="font-bold text-slate-800">{countdown.months}</div><div className="text-[10px] text-slate-500">شهر</div></div>
             <div className="text-slate-300 font-light">|</div>
             <div><div className="font-bold text-slate-800">{countdown.days}</div><div className="text-[10px] text-slate-500">يوم</div></div>
