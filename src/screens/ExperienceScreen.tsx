@@ -262,10 +262,11 @@ export const ExperienceScreen = () => {
     setPanicDuaa(EMERGENCY_DUAAS[Math.floor(Math.random() * EMERGENCY_DUAAS.length)]);
     setIsPanicMode(true);
     setBearState('love');
-    setTimeout(() => {
-      setIsPanicMode(false);
-      setBearState('idle');
-    }, 8000);
+  };
+
+  const closePanic = () => {
+    setIsPanicMode(false);
+    setBearState('idle');
   };
 
   const SLEEP_SURAHS = [
@@ -316,6 +317,12 @@ export const ExperienceScreen = () => {
             className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 sm:p-8 bg-black/95 backdrop-blur-md overflow-y-auto"
             onClick={nextSleepStep}
           >
+            <button 
+              onClick={(e) => { e.stopPropagation(); setIsSleepGuardian(false); setBearState('idle'); }}
+              className="absolute top-6 right-6 px-4 py-2 bg-slate-800/50 hover:bg-slate-700 text-slate-300 rounded-full text-sm font-bold transition-colors z-50 flex items-center gap-2"
+            >
+              رجوع <span>↩</span>
+            </button>
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -366,7 +373,7 @@ export const ExperienceScreen = () => {
                 onClick={() => setIsLoveJarOpen(false)}
                 className="mt-6 px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full text-sm font-bold transition-colors"
               >
-                اقفلي البرطمان
+                رجوع ↩
               </button>
             </motion.div>
           </motion.div>
@@ -400,7 +407,7 @@ export const ExperienceScreen = () => {
                 onClick={() => setIsFridayLetterOpen(false)}
                 className="mt-6 px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full text-sm font-bold transition-colors"
               >
-                اقفلي الجواب
+                رجوع ↩
               </button>
             </motion.div>
           </motion.div>
@@ -565,7 +572,7 @@ export const ExperienceScreen = () => {
               onClick={() => setIsDhikrMode(false)}
               className="mt-8 px-8 py-2 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold border border-indigo-200 transition-colors pointer-events-auto"
             >
-              رجوع
+              رجوع ↩
             </button>
           </motion.div>
         ) : (
@@ -654,6 +661,12 @@ export const ExperienceScreen = () => {
                 >
                   <h3 className="text-rose-800 font-bold mb-2">رسالة طوارئ من حبيبك 💌</h3>
                   <p className="text-rose-900 font-medium leading-relaxed">{panicDuaa}</p>
+                  <button 
+                    onClick={closePanic}
+                    className="mt-4 px-6 py-2 bg-rose-200 hover:bg-rose-300 text-rose-800 rounded-full text-sm font-bold transition-colors"
+                  >
+                    رجوع ↩
+                  </button>
                 </motion.div>
               ) : (
                 <motion.div 

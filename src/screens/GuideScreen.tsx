@@ -21,8 +21,15 @@ export const GuideScreen = () => {
       exit={{ opacity: 0, x: -20 }}
       className={`flex flex-col h-full w-full overflow-y-auto pb-24 ${getThemeColors()}`}
     >
-      <div className="p-6">
-        <h1 className="text-3xl font-extrabold mb-8 text-center mt-4 drop-shadow-sm" dir="rtl">
+      <div className="p-6 relative">
+        <button 
+          onClick={() => useSecretsStore.getState().setScreen('experience')}
+          className="absolute top-2 left-6 px-4 py-2 bg-white/70 hover:bg-white backdrop-blur-sm text-slate-600 rounded-full text-sm font-bold shadow-sm border border-white/60 transition-all z-50 flex items-center gap-2"
+        >
+          رجوع <span>↩</span>
+        </button>
+
+        <h1 className="text-3xl font-extrabold mb-8 text-center mt-12 drop-shadow-sm" dir="rtl">
           📖 دليل الدبدوب السحري
         </h1>
         

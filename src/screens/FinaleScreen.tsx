@@ -125,6 +125,13 @@ export const FinaleScreen = () => {
       animate={{ opacity: 1 }} 
       className={`flex flex-col items-center h-full flex-1 w-full p-6 pb-24 relative transition-colors duration-[3000ms] ${bgClass} overflow-y-auto overflow-x-hidden`}
     >
+      <button 
+        onClick={reset}
+        className="absolute top-6 left-6 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-bold border border-white/20 transition-all z-50 flex items-center gap-2"
+      >
+        رجوع <span>↩</span>
+      </button>
+
       <AnimatePresence>
         {(phase === 2 || phase === 3) && (
           <motion.div

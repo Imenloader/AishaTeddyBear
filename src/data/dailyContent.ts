@@ -1,4 +1,4 @@
-﻿import { AppMode } from '../types';
+import { AppMode } from '../types';
 
 export const FRIDAY_LETTERS = [
   "يا حبيبة روحي، جمعة مباركة على أطهر قلب. كل يوم جمعة بدعي ربنا في ساعة الإجابة إنه يعجل بجمعنا في بيت واحد مبني على طاعته وحبه. بتخيل اليوم اللي هنقرأ فيه سورة الكهف سوا، ونصلي جماعة، وتكوني إنتي الإمامة لقلبي. بحبك في الله.",
@@ -85,19 +85,8 @@ export const DICTIONARY = {
   }
 };
 
-const mulberry32 = (a: number) => {
-  return () => {
-    let t = a += 0x6D2B79F5;
-    t = Math.imul(t ^ t >>> 15, t | 1);
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  }
-};
-
 export const getDailyMessage = (mode: AppMode, date: Date = new Date()) => {
-  const dayOfYear = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24);
-  const random = mulberry32(date.getFullYear() * 1000 + dayOfYear);
-  const getRand = (arr: any[]) => arr[Math.floor(random() * arr.length)];
+  const getRand = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)];
   
   const dict = DICTIONARY[mode] || DICTIONARY['soul'];
 
