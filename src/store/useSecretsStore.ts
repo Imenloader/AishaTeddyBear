@@ -59,7 +59,7 @@ export const useSecretsStore = create<SecretsState>()(
       setAppMode: (mode) => set({ appMode: mode }),
       
       reset: () => set((state) => ({ 
-        currentScreen: 'intro', 
+        currentScreen: 'welcome', 
         discoveredSecrets: [], 
         currentBearState: 'idle', 
         currentMessage: null, 

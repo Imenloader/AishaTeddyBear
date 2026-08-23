@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSecretsStore } from '../store/useSecretsStore';
 import { FloatingParticles } from '../components/FloatingParticles';
@@ -116,14 +116,16 @@ export const IntroScreen: React.FC = () => {
             <AnimatePresence>
               {showButton && (
                 <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={skipIntro}
-                  className="px-8 py-3 bg-white/80 hover:bg-white text-rose-600 rounded-full font-bold shadow-md transition-all flex items-center gap-2"
+                  className="px-10 py-4 bg-gradient-to-r from-rose-400 to-pink-500 hover:from-rose-500 hover:to-pink-600 text-white rounded-full font-bold text-xl shadow-xl shadow-rose-300/50 transition-all flex items-center gap-3 animate-bounce"
                   dir="rtl"
                 >
-                  <span>دخول </span>
-                  <span>🐾</span>
+                  <span>يلا بينا!</span>
+                  <span className="text-2xl">🧸💖</span>
                 </motion.button>
               )}
             </AnimatePresence>
@@ -132,9 +134,9 @@ export const IntroScreen: React.FC = () => {
             {!showButton && (
               <button
                 onClick={skipIntro}
-                className="absolute bottom-10 px-4 py-2 text-rose-500/70 hover:text-rose-600 text-sm font-bold transition-colors"
+                className="absolute bottom-10 px-6 py-2 bg-white/40 hover:bg-white/70 text-rose-600 rounded-full text-sm font-bold shadow-sm backdrop-blur-sm transition-all"
               >
-                تخطي ↩
+                تخطي الأغنية 🐾
               </button>
             )}
           </motion.div>
