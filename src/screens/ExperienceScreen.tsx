@@ -194,15 +194,18 @@ export const ExperienceScreen = () => {
   const [dailyQuestion] = useState(() => getDailyQuestion());
   const [showDailyMsg, setShowDailyMsg] = useState(true);
   const [showPrayedSent, setShowPrayedSent] = useState(false);
-  const [liveMessage, setLiveMessage] = useState<string | null>(null);
+  const [liveMessage, setLiveMessage] = useState<{title?: string, message: string} | null>(null);
 
   useEffect(() => {
     const eventSource = new EventSource('https://ntfy.sh/aisha_teddy_love_secret_2026_live/sse');
     eventSource.onmessage = (e) => {
       try {
         const data = JSON.parse(e.data);
-        if (data.event === 'message' && data.message) {
-          setLiveMessage(data.message);
+        if (data.event === 'message' && (data.message || data.title)) {
+          setLiveMessage({
+            title: data.title,
+            message: data.message || '...'
+          });
           setBearState('love');
         }
       } catch (err) {}
@@ -554,9 +557,9 @@ export const ExperienceScreen = () => {
             >
               <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-400 to-teal-500 animate-pulse" />
               <div className="text-5xl mb-4 animate-bounce">💬</div>
-              <h3 className="text-lg font-bold text-emerald-600 mb-4" dir="rtl">رسالة عاجلة من حبيبك دلوقتي!</h3>
+              <h3 className="text-lg font-bold text-emerald-600 mb-4" dir="rtl">{liveMessage.title || 'رسالة عاجلة من حبيبك دلوقتي!'}</h3>
               <p className="text-slate-700 leading-relaxed font-bold text-2xl" dir="rtl">
-                {liveMessage}
+                {liveMessage.message}
               </p>
               <button 
                 onClick={() => setLiveMessage(null)}
