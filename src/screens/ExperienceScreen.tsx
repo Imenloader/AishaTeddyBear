@@ -242,14 +242,11 @@ export const ExperienceScreen = () => {
     setShowThoughtSent(true);
     
     try {
-      // Send the silent push notification via ntfy.sh
-      await fetch('https://ntfy.sh/aisha_teddy_love_secret_2026', {
+      // Send the silent push notification via ntfy.sh (using URL params avoids CORS preflights)
+      const title = encodeURIComponent('رسالة من أميرة أحلامك 🎀');
+      await fetch(`https://ntfy.sh/aisha_teddy_love_secret_2026?title=${title}&tags=heart,sparkles`, {
         method: 'POST',
-        body: 'عائشة بتفكر فيك دلوقتي يا دبدوب! ❤️',
-        headers: {
-            'Title': 'رسالة من أميرة أحلامك 🎀',
-            'Tags': 'heart,sparkles'
-        }
+        body: 'عائشة بتفكر فيك دلوقتي يا دبدوب! ❤️'
       });
     } catch (e) {
       console.error("Failed to send thought:", e);
