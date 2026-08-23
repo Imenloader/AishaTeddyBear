@@ -97,6 +97,21 @@ export const GuideScreen = () => {
               دلوقتي تقدري تفتحي جواب الجمعة في أي وقت من زرار الجواب (💌). هتلاقي رسالة خاصة ومختلفة تماماً بتفكرك بقد إيه أنا بحبك وبدعي ربنا يجمعنا على خير.
             </p>
           </div>
+          
+          <div className="flex justify-center mt-8 mb-12">
+            <button
+              onClick={() => {
+                if (window.confirm('متأكدة إنك عايزة تمسحي كل الأسرار اللي فتحتيها وتبدأي من جديد؟')) {
+                  useSecretsStore.setState({ discoveredSecrets: [] });
+                  alert('تم مسح الذكريات بنجاح! تقدري تفتحي البرطمان من جديد 🧸✨');
+                }
+              }}
+              className="px-6 py-3 bg-red-100 hover:bg-red-200 text-red-700 rounded-full text-sm font-bold shadow-sm transition-all flex items-center gap-2"
+            >
+              <span>مسح ذكريات البرطمان (بدء من جديد)</span>
+              <span>🔄</span>
+            </button>
+          </div>
 
         </div>
       </div>

@@ -60,12 +60,11 @@ export const useSecretsStore = create<SecretsState>()(
       
       reset: () => set((state) => ({ 
         currentScreen: 'welcome', 
-        discoveredSecrets: [], 
         currentBearState: 'idle', 
         currentMessage: null, 
         isFinaleTriggered: false,
         hasSkippedCamera: false
-        // we intentionally do not reset appMode here, so it persists across resets
+        // we intentionally do not reset appMode or discoveredSecrets here, so they persist
       }))
     }),
     {

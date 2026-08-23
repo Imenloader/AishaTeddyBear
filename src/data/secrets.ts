@@ -2899,7 +2899,13 @@ export const getSecrets = (mode: 'soul' | 'heart' | 'sparkle' | 'dream') => {
   }
 };
 
-export const getFinalSecret = (mode: 'soul' | 'heart' | 'sparkle' | 'dream') => {
+export const FINAL_SECRET_ULTIMATE: FinalSecret = {
+  state: ['love', 'sleep'],
+  message: 'يا رفيقة دربي، يا أجمل اختياراتي وأعظم أرزاقي.. النهارده إنتي فتحتي كل الرسايل، وكل الأسرار اللي في قلبي، بس الحقيقة إن حبي ليكي ملوش نهاية وملوش حد. الأبلكيشن ده كان مجرد مساحة صغيرة عشان أقولك فيها إني بحبك في كل أحوالك، وإني دايماً فخور بيكي. شكراً على كل لحظة، وكل دعوة، وكل ضحكة بيننا. بدعي ربنا يجمعنا على خير قريب أوي، ونعيش كل اللي باقي من عمرنا سوا، حلال وفي طاعة ربنا. بحبك يا عائشة.. بحبك أكتر من أي كلام.'
+};
+
+export const getFinalSecret = (mode: 'soul' | 'heart' | 'sparkle' | 'dream', isUltimate: boolean = false) => {
+  if (isUltimate) return FINAL_SECRET_ULTIMATE;
   switch(mode) {
     case 'heart': return FINAL_SECRET_HEART;
     case 'sparkle': return FINAL_SECRET_SPARKLE;

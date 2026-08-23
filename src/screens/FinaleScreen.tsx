@@ -9,9 +9,10 @@ import confetti from 'canvas-confetti';
 const heartEmojis = ['💖', '💗', '💝'];
 
 export const FinaleScreen = () => {
-  const { currentBearState, setBearState, reset, appMode } = useSecretsStore();
+  const { currentBearState, setBearState, reset, appMode, discoveredSecrets } = useSecretsStore();
   
-  const FINAL_SECRET = getFinalSecret(appMode);
+  const isUltimate = discoveredSecrets.length >= 400;
+  const FINAL_SECRET = getFinalSecret(appMode, isUltimate);
   
   const [phase, setPhase] = useState<1 | 2 | 3>(1);
   const [typedMessage, setTypedMessage] = useState('');

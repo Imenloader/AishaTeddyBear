@@ -46,10 +46,11 @@ export const ExperienceScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (discoveredSecrets.length >= 7 && !isFinaleTriggered) {
+    const modeUnlockedCount = SECRETS.filter(s => discoveredSecrets.includes(s.id)).length;
+    if (modeUnlockedCount >= SECRETS.length && !isFinaleTriggered) {
       triggerFinale();
     }
-  }, [discoveredSecrets, isFinaleTriggered, triggerFinale]);
+  }, [discoveredSecrets, isFinaleTriggered, triggerFinale, SECRETS]);
 
   useEffect(() => {
     if (isFinaleTriggered) {
